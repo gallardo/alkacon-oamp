@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>8.0.1</opencms_version>
-		<createdate>Tue, 26 Jul 2011 15:31:25 GMT</createdate>
+		<opencms_version>8.0.3</opencms_version>
+		<createdate>Mon, 02 Jan 2012 09:59:01 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains online form functionality for OpenCms.</p>
 <p>This module can easily be used to create online input forms.</p>
 <p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>2.0</version>
+		<version>2.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -30,8 +30,10 @@
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/com.alkacon.opencms.formgenerator/"/>
-			<resource uri="/system/workplace/resources/filetypes/alkacon-webform.gif"/>
-			<resource uri="/system/workplace/resources/filetypes/alkacon-webformreport.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/alkacon-webform.png"/>
+			<resource uri="/system/workplace/resources/filetypes/alkacon-webformreport.png"/>
+			<resource uri="/system/workplace/resources/filetypes/alkacon-webform_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/alkacon-webformreport_big.png"/>
 			<resource uri="/system/workplace/resources/tools/database/icons/big/webform.png"/>
 			<resource uri="/system/workplace/resources/tools/database/buttons/webform_download.png"/>
 			<resource uri="/system/workplace/resources/tools/database/buttons/webform_delete_disabled.png"/>
@@ -71,13 +73,13 @@
 			</type>
 		</resourcetypes>
 		<explorertypes>
-			<explorertype name="alkacon-webform" key="fileicon.alkacon-webform" icon="alkacon-webform.gif" reference="xmlcontent">
+			<explorertype name="alkacon-webform" key="fileicon.alkacon-webform" icon="alkacon-webform.png" bigicon="alkacon-webform_big.png" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=alkacon-webform" order="65" autosetnavigation="false" autosettitle="false" info="desc.webform"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="alkacon-webformreport" key="fileicon.alkacon-webformreport" icon="alkacon-webformreport.gif" reference="xmlcontent">
+			<explorertype name="alkacon-webformreport" key="fileicon.alkacon-webformreport" icon="alkacon-webformreport.png" bigicon="alkacon-webformreport_big.png" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=alkacon-webformreport" order="66" autosetnavigation="false" autosettitle="false" info="desc.webformreport"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
@@ -89,10 +91,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>2f851be1-a64d-11e0-a9f7-f15c976c2a5c</uuidstructure>
-			<datelastmodified>Mon, 04 Jul 2011 14:52:06 GMT</datelastmodified>
+			<uuidstructure>f1138ef7-20ac-11e1-a228-27f2fbbdf126</uuidstructure>
+			<datelastmodified>Wed, 07 Dec 2011 08:24:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 04 Jul 2011 14:52:06 GMT</datecreated>
+			<datecreated>Wed, 07 Dec 2011 08:24:54 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -111,10 +113,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>3030c56d-a64d-11e0-a9f7-f15c976c2a5c</uuidstructure>
-			<datelastmodified>Mon, 04 Jul 2011 14:52:07 GMT</datelastmodified>
+			<uuidstructure>f20df4c3-20ac-11e1-a228-27f2fbbdf126</uuidstructure>
+			<datelastmodified>Wed, 07 Dec 2011 08:24:56 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 04 Jul 2011 14:52:07 GMT</datecreated>
+			<datecreated>Wed, 07 Dec 2011 08:24:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -794,6 +796,26 @@
 				<property>
 					<name>content-encoding</name>
 					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/com.alkacon.opencms.formgenerator/classes/com/alkacon/opencms/formgenerator/workplace_es.properties</source>
+			<destination>system/modules/com.alkacon.opencms.formgenerator/classes/com/alkacon/opencms/formgenerator/workplace_es.properties</destination>
+			<type>plain</type>
+			<uuidstructure>8dff0274-3524-11e1-8301-27f2fbbdf126</uuidstructure>
+			<uuidresource>8dff0275-3524-11e1-8301-27f2fbbdf126</uuidresource>
+			<datelastmodified>Mon, 02 Jan 2012 09:31:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2012 09:31:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[workplace_es]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -4791,7 +4813,7 @@
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
 			<uuidstructure>6dc24f52-8db6-11e0-972f-8f51174189b7</uuidstructure>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -4801,11 +4823,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/alkacon-webform.gif</source>
-			<destination>system/workplace/resources/filetypes/alkacon-webform.gif</destination>
+			<source>system/workplace/resources/filetypes/alkacon-webform.png</source>
+			<destination>system/workplace/resources/filetypes/alkacon-webform.png</destination>
 			<type>image</type>
-			<uuidstructure>e0325a9a-ac8b-11dc-9e0d-93c509c2a6ad</uuidstructure>
-			<uuidresource>e0325a9b-ac8b-11dc-9e0d-93c509c2a6ad</uuidresource>
+			<uuidstructure>ed0c10b9-1f49-11e1-8922-9b778fa0dc42</uuidstructure>
+			<uuidresource>ed0c10ba-1f49-11e1-8922-9b778fa0dc42</uuidresource>
 			<datelastmodified>Mon, 17 Dec 2007 10:41:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 17 Dec 2007 10:36:07 GMT</datecreated>
@@ -4821,11 +4843,31 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/alkacon-webformreport.gif</source>
-			<destination>system/workplace/resources/filetypes/alkacon-webformreport.gif</destination>
+			<source>system/workplace/resources/filetypes/alkacon-webform_big.png</source>
+			<destination>system/workplace/resources/filetypes/alkacon-webform_big.png</destination>
 			<type>image</type>
-			<uuidstructure>aa6efd2b-5dad-11df-ac93-3d965a9c8d62</uuidstructure>
-			<uuidresource>aa6efd2c-5dad-11df-ac93-3d965a9c8d62</uuidresource>
+			<uuidstructure>fea58a64-1f4d-11e1-a553-9b778fa0dc42</uuidstructure>
+			<uuidresource>fea58a65-1f4d-11e1-a553-9b778fa0dc42</uuidresource>
+			<datelastmodified>Mon, 17 Dec 2007 10:41:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 17 Dec 2007 10:36:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/alkacon-webformreport.png</source>
+			<destination>system/workplace/resources/filetypes/alkacon-webformreport.png</destination>
+			<type>image</type>
+			<uuidstructure>ed15adac-1f49-11e1-8922-9b778fa0dc42</uuidstructure>
+			<uuidresource>ed15adad-1f49-11e1-8922-9b778fa0dc42</uuidresource>
 			<datelastmodified>Wed, 12 May 2010 10:03:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 May 2010 10:03:51 GMT</datecreated>
@@ -4835,6 +4877,26 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/alkacon-webformreport_big.png</source>
+			<destination>system/workplace/resources/filetypes/alkacon-webformreport_big.png</destination>
+			<type>image</type>
+			<uuidstructure>feaf2757-1f4d-11e1-a553-9b778fa0dc42</uuidstructure>
+			<uuidresource>feaf2758-1f4d-11e1-a553-9b778fa0dc42</uuidresource>
+			<datelastmodified>Wed, 12 May 2010 10:03:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 May 2010 10:03:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
 				</property>
 			</properties>
 			<relations/>

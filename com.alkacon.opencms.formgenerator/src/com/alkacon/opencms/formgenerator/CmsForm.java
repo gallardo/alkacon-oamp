@@ -94,6 +94,9 @@ public class CmsForm {
     /** Mail type: text mail. */
     public static final String MAILTYPE_TEXT = "text";
 
+    /** Mailto property: can be attached to container page. Overwrites the "Mail to" field from the webform*/
+    public static final String PROPERTY_MAILTO = "webform.mailto";
+
     /** The module name. */
     public static final String MODULE_NAME = CmsForm.class.getPackage().getName();
 
@@ -488,6 +491,9 @@ public class CmsForm {
 
     /** If there is at least one mandatory field. */
     protected boolean m_hasMandatoryFields;
+
+    /** The current jsp action element. */
+    protected CmsJspActionElement m_jspAction;
 
     /** configuration value. */
     protected String m_mailBCC;
@@ -1067,6 +1073,16 @@ public class CmsForm {
     }
 
     /**
+     * Returns the current jsp action element.<p>
+     *
+     * @return the jsp action element
+     */
+    public CmsJspActionElement getJspAction() {
+
+        return m_jspAction;
+    }
+
+    /**
      * Returns the mail bcc recipient(s).<p>
      * 
      * @return the mail bcc recipient(s)
@@ -1336,6 +1352,7 @@ public class CmsForm {
         m_fields = new ArrayList<I_CmsField>();
         m_dynaFields = new ArrayList<I_CmsField>();
         m_fieldsByName = new HashMap<String, I_CmsField>();
+        m_jspAction = jsp;
 
         // initialize general form configuration
         initFormGlobalConfiguration(content, jsp.getCmsObject(), locale, messages);
@@ -1470,7 +1487,7 @@ public class CmsForm {
     /**
      * Sets the form title.<p>
      * 
-     * @param formText the form title
+     * @param title the form title
      */
     public void setTitle(String title) {
 
@@ -1680,7 +1697,12 @@ public class CmsForm {
         setMailFromName(getConfigurationValue(stringValue, ""));
         // get the mail to address(es)
         stringValue = getContentStringValue(content, cms, NODE_MAILTO, locale);
-        setMailTo(getConfigurationValue(stringValue, ""));
+        String mailto = (cms.readPropertyObject(cms.getRequestContext().getUri(), PROPERTY_MAILTO, false)).getValue("");
+        if (CmsStringUtil.isNotEmpty(mailto)) {
+            setMailTo(mailto);
+        } else {
+            setMailTo(getConfigurationValue(stringValue, ""));
+        }
         // get the mail subject
         stringValue = getContentStringValue(content, cms, NODE_MAILSUBJECT, locale);
         setMailSubject(getConfigurationValue(resolver, stringValue, ""));
@@ -1731,7 +1753,7 @@ public class CmsForm {
         stringValue = getContentStringValue(content, cms, pathPrefix + NODE_DATATARGET_FORMID, locale);
         setFormId(getConfigurationValue(stringValue, content.getFile().getRootPath()));
 
-        if (content.hasValue(NODE_OPTIONALCONFIGURATION, locale)) {
+        if (CmsFormContentUtil.hasContentValue(content, NODE_OPTIONALCONFIGURATION, locale)) {
             // optional configuration options
             pathPrefix = NODE_OPTIONALCONFIGURATION + "/";
 
@@ -1874,7 +1896,7 @@ public class CmsForm {
                 messages.key("form.confirmation.checkbox")));
         }
 
-        if (content.hasValue(NODE_OPTIONALEXPIRATION, locale)) {
+        if (CmsFormContentUtil.hasContentValue(content, NODE_OPTIONALEXPIRATION, locale)) {
             // optional confirmation mail nodes
             pathPrefix = NODE_OPTIONALEXPIRATION + "/";
             stringValue = getContentStringValue(content, cms, pathPrefix + NODE_DATE, locale);
@@ -1887,7 +1909,7 @@ public class CmsForm {
             setExpirationText(getConfigurationValue(stringValue, ""));
         }
 
-        if (content.hasValue(NODE_OPTIONALRELEASE, locale)) {
+        if (CmsFormContentUtil.hasContentValue(content, NODE_OPTIONALRELEASE, locale)) {
             // optional form release nodes
             pathPrefix = NODE_OPTIONALRELEASE + "/";
             stringValue = getContentStringValue(content, cms, pathPrefix + NODE_DATE, locale);
@@ -1900,8 +1922,11 @@ public class CmsForm {
             setReleaseText(getConfigurationValue(stringValue, ""));
         }
 
-        if (content.hasValue(NODE_OPTIONALCONFIGURATION + "/" + NODE_OPTIONALMAXSUBMISSIONS, locale)) {
-            // optional form release nodes
+        if (CmsFormContentUtil.hasContentValue(
+            content,
+            NODE_OPTIONALCONFIGURATION + "/" + NODE_OPTIONALMAXSUBMISSIONS,
+            locale)) {
+            // optional form submissions nodes
             pathPrefix = NODE_OPTIONALCONFIGURATION + "/" + NODE_OPTIONALMAXSUBMISSIONS + "/";
             stringValue = getContentStringValue(content, cms, pathPrefix + NODE_VALUE, locale);
             try {
@@ -1962,6 +1987,7 @@ public class CmsForm {
         }
 
         // get the file uploads stored in the session
+        @SuppressWarnings("unchecked")
         Map<String, FileItem> fileUploads = (Map<String, FileItem>)jsp.getRequest().getSession().getAttribute(
             CmsFormHandler.ATTRIBUTE_FILEITEMS);
 
@@ -1983,7 +2009,7 @@ public class CmsForm {
                 false));
         }
 
-        if (!jsp.getRequestContext().currentProject().isOnlineProject()) {
+        if (!jsp.getRequestContext().getCurrentProject().isOnlineProject()) {
             // validate the form configuration in offline project
             validateFormConfiguration(messages);
         }
@@ -2021,7 +2047,10 @@ public class CmsForm {
         setRefreshSessionInterval(-1);
         setShowMandatory(true);
         setShowReset(true);
-        setTemplateFile(VFS_PATH_DEFAULT_TEMPLATEFILE);
+        String tempfilePath = OpenCms.getModuleManager().getModule(MODULE_NAME).getParameter(
+            MODULE_PARAM_TEMPLATE_FILE,
+            VFS_PATH_DEFAULT_TEMPLATEFILE);
+        setTemplateFile(tempfilePath);
         setTitle("");
     }
 

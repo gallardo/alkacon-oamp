@@ -436,6 +436,14 @@ public class CmsFormHandler extends CmsJspActionElement {
                         result.append(CmsEncoder.escapeXml(item.getValue()));
                         result.append("\" />\n");
                     }
+                } else if (CmsParameterField.class.equals(currentField.getClass())) {
+                    // special case: Parameter field must store Field value and request parameters
+                    result.append("<input type=\"hidden\" name=\"");
+                    result.append(currentField.getName());
+                    result.append("\" value=\"");
+                    result.append(CmsEncoder.escapeXml(currentField.getValue()));
+                    result.append("\" />\n");
+                    result.append(CmsParameterField.createHiddenFields(getParameterMap(), currentField.getParameters()));
                 } else if (CmsStringUtil.isNotEmpty(currentField.getValue())) {
                     // all other fields are converted to a simple hidden field
                     result.append("<input type=\"hidden\" name=\"");
@@ -444,7 +452,6 @@ public class CmsFormHandler extends CmsJspActionElement {
                     result.append(CmsEncoder.escapeXml(currentField.getValue()));
                     result.append("\" />\n");
                 }
-
             }
             // store the generated input fields for further usage to avoid unnecessary rebuilding
             m_hiddenFields = result.toString();
@@ -502,6 +509,13 @@ public class CmsFormHandler extends CmsJspActionElement {
                 continue;
             } else if (current instanceof CmsFileUploadField) {
                 value = current.getValue();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+                    // try to read upload item from session attribute
+                    FileItem fileItem = getUploadFile(current);
+                    if (fileItem != null) {
+                        value = fileItem.getName();
+                    }
+                }
                 value = CmsFormHandler.getTruncatedFileItemName(value);
             }
             if (isHtmlMail) {
@@ -521,6 +535,10 @@ public class CmsFormHandler extends CmsJspActionElement {
                 } else if (current instanceof CmsEmptyField) {
                     fieldValue = value;
                 }
+                // if label and value is not set, skip it
+                if (CmsStringUtil.isEmpty(label) && CmsStringUtil.isEmpty(fieldValue)) {
+                    continue;
+                }
                 I_CmsField mailField = new CmsTextField();
                 mailField.setLabel(label);
                 mailField.setValue(fieldValue);
@@ -536,6 +554,10 @@ public class CmsFormHandler extends CmsJspActionElement {
                 } catch (Exception e) {
                     // error parsing the String, provide it as is
                     label = current.getLabel();
+                }
+                // if label and value is not set, skip it
+                if (CmsStringUtil.isEmpty(label) && CmsStringUtil.isEmpty(value)) {
+                    continue;
                 }
                 fieldsResult.append(label);
 
@@ -745,7 +767,7 @@ public class CmsFormHandler extends CmsJspActionElement {
     public StringTemplate getOutputTemplate(String templateName) {
 
         StringTemplate result = getOutputTemplateGroup().getInstanceOf(templateName);
-        if (!getRequestContext().currentProject().isOnlineProject() && (result == null)) {
+        if (!getRequestContext().getCurrentProject().isOnlineProject() && (result == null)) {
             // no template with the specified name found, return initialized error template
             try {
                 CmsFile stFile = getCmsObject().readFile(CmsForm.VFS_PATH_ERROR_TEMPLATEFILE);
@@ -1095,6 +1117,13 @@ public class CmsFormHandler extends CmsJspActionElement {
                     fValue = data.getFieldStringValueByName(field.getName());
                 }
                 if (field instanceof CmsFileUploadField) {
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(fValue)) {
+                        // try to read upload item from session attribute
+                        FileItem fileItem = getUploadFile(field);
+                        if (fileItem != null) {
+                            fValue = fileItem.getName();
+                        }
+                    }
                     fValue = CmsFormHandler.getTruncatedFileItemName(fValue);
                 }
                 m_macroResolver.addMacro(field.getLabel(), fValue);
@@ -1426,6 +1455,13 @@ public class CmsFormHandler extends CmsJspActionElement {
                 } else if (current instanceof CmsPasswordField) {
                     value = value.replaceAll(".", "*");
                 } else if (current instanceof CmsFileUploadField) {
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+                        // try to read upload item from session attribute
+                        FileItem fileItem = getUploadFile(current);
+                        if (fileItem != null) {
+                            value = fileItem.getName();
+                        }
+                    }
                     value = CmsFormHandler.getTruncatedFileItemName(value);
                     value = convertToHtmlValue(value);
                 } else {
@@ -1492,12 +1528,23 @@ public class CmsFormHandler extends CmsJspActionElement {
             } else if (current instanceof CmsPasswordField) {
                 value = value.replaceAll(".", "*");
             } else if (current instanceof CmsFileUploadField) {
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+                    // try to read upload item from session attribute
+                    FileItem fileItem = getUploadFile(current);
+                    if (fileItem != null) {
+                        value = fileItem.getName();
+                    }
+                }
                 value = CmsFormHandler.getTruncatedFileItemName(value);
                 value = convertToHtmlValue(value);
             } else if (current instanceof CmsEmptyField) {
                 // do nothing
             } else {
                 value = convertToHtmlValue(value);
+            }
+            // if label and value is not set, skip it
+            if (CmsStringUtil.isEmpty(label) && CmsStringUtil.isEmpty(value)) {
+                continue;
             }
             I_CmsField confirmField = new CmsTextField();
             confirmField.setLabel(label);
@@ -1635,7 +1682,7 @@ public class CmsFormHandler extends CmsJspActionElement {
 
         // determine if the download button has to be shown
         String downloadButton = null;
-        if (!getRequestContext().currentProject().isOnlineProject() && getFormConfiguration().isTransportDatabase()) {
+        if (!getRequestContext().getCurrentProject().isOnlineProject() && getFormConfiguration().isTransportDatabase()) {
             downloadButton = getMessages().key("form.button.downloaddata");
         }
 
@@ -1669,7 +1716,7 @@ public class CmsFormHandler extends CmsJspActionElement {
     protected String buildTemplateGroupCheckHtml() {
 
         String result = "";
-        if (!getRequestContext().currentProject().isOnlineProject()) {
+        if (!getRequestContext().getCurrentProject().isOnlineProject()) {
             // check template group errors
             StringTemplateErrorListener el = getOutputTemplateGroup().getErrorListener();
             if ((el != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(el.toString())) {
@@ -1753,7 +1800,7 @@ public class CmsFormHandler extends CmsJspActionElement {
         }
         String formAction = getParameter(PARAM_FORMACTION);
         // security check: some form actions are not allowed for everyone:
-        if (this.getCmsObject().getRequestContext().currentProject().isOnlineProject()) {
+        if (this.getCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
             if (CmsFormHandler.ACTION_DOWNLOAD_DATA_1.equals(formAction)) {
                 LOG.error("Received an illegal request for download data of form "
                     + formConfigUri

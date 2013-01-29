@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>8.0.2</opencms_version>
-		<createdate>Thu, 27 Jan 2011 16:55:49 GMT</createdate>
+		<createdate>Fri, 04 Nov 2011 16:05:10 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -15,14 +15,14 @@
 		<class/>
 		<description><![CDATA[<p>This module provides a photo album for displaying pictures with the help of ThickBox.</p>
 <p><i>(c) 2011 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.0.0</version>
+		<version>2.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.jquery" version="8.0.0"/>
+			<dependency name="com.alkacon.opencms.v8.commons" version="1.0.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/com.alkacon.opencms.v8.photoalbum/classes/" destination="WEB-INF/classes/"/>
@@ -31,6 +31,7 @@
 		<resources>
 			<resource uri="/system/modules/com.alkacon.opencms.v8.photoalbum/"/>
 			<resource uri="/system/workplace/resources/filetypes/alkacon-v8-photoalbum.png"/>
+			<resource uri="/system/workplace/resources/filetypes/alkacon-v8-photoalbum_big.png"/>
 		</resources>
 		<parameters/>
 		<resourcetypes>
@@ -39,7 +40,7 @@
 			</type>
 		</resourcetypes>
 		<explorertypes>
-			<explorertype name="alkacon-v8-photoalbum" key="fileicon.alkacon-v8-photoalbum" icon="alkacon-v8-photoalbum.png" reference="xmlcontent">
+			<explorertype name="alkacon-v8-photoalbum" key="fileicon.alkacon-v8-photoalbum" icon="alkacon-v8-photoalbum.png" bigicon="alkacon-v8-photoalbum_big.png" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=alkacon-v8-photoalbum" order="60" autosetnavigation="false" autosettitle="false" info="desc.alkacon-v8-photoalbum"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
@@ -51,10 +52,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>2a6ee1c5-da30-11e0-8ab5-8756953fbf24</uuidstructure>
-			<datelastmodified>Thu, 08 Sep 2011 15:35:23 GMT</datelastmodified>
+			<uuidstructure>23caadab-f006-11e0-b750-6f6871313691</uuidstructure>
+			<datelastmodified>Thu, 06 Oct 2011 10:29:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 08 Sep 2011 15:35:23 GMT</datecreated>
+			<datecreated>Thu, 06 Oct 2011 10:29:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -73,10 +74,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>2b587eb1-da30-11e0-8ab5-8756953fbf24</uuidstructure>
-			<datelastmodified>Thu, 08 Sep 2011 15:35:24 GMT</datelastmodified>
+			<uuidstructure>245e8977-f006-11e0-b750-6f6871313691</uuidstructure>
+			<datelastmodified>Thu, 06 Oct 2011 10:29:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 08 Sep 2011 15:35:24 GMT</datecreated>
+			<datecreated>Thu, 06 Oct 2011 10:29:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -428,384 +429,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/colorbox.css</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/colorbox.css</destination>
-			<type>plain</type>
-			<uuidstructure>4316fca1-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>4316fca2-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:24:33 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:24:33 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[colorbox]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/jquery.colorbox-min.js</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/jquery.colorbox-min.js</destination>
-			<type>plain</type>
-			<uuidstructure>431e2894-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>431e2895-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:24:33 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:24:33 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[jquery.colorbox-min]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images</destination>
-			<type>folder</type>
-			<uuidstructure>4cdc0e17-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<datelastmodified>Mon, 12 Sep 2011 07:24:49 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:24:49 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/border.png</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/border.png</destination>
-			<type>image</type>
-			<uuidstructure>55283b2a-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>55283b2b-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:03 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:03 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[border]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:1,h:50]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/controls.png</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/controls.png</destination>
-			<type>image</type>
-			<uuidstructure>552f671e-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>552f671f-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:03 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:03 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[controls]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:175,h:50]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/loading.gif</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/loading.gif</destination>
-			<type>image</type>
-			<uuidstructure>55344922-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>55344923-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:03 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:03 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[loading]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:32,h:32]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/loading_background.png</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/loading_background.png</destination>
-			<type>image</type>
-			<uuidstructure>55403006-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>55403007-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[loading_background]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:40,h:40]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/overlay.png</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/overlay.png</destination>
-			<type>image</type>
-			<uuidstructure>554279fa-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>554279fb-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:04 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[overlay]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:30,h:30]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6</destination>
-			<type>folder</type>
-			<uuidstructure>5fcd737e-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:21 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:21 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderBottomCenter.png</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderBottomCenter.png</destination>
-			<type>image</type>
-			<uuidstructure>722d6e41-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>722d6e42-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[borderBottomCenter]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:1,h:21]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderBottomLeft.png</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderBottomLeft.png</destination>
-			<type>image</type>
-			<uuidstructure>72322935-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>72322936-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[borderBottomLeft]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:21,h:21]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderBottomRight.png</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderBottomRight.png</destination>
-			<type>image</type>
-			<uuidstructure>7236e429-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>7236e42a-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[borderBottomRight]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:21,h:21]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderMiddleLeft.png</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderMiddleLeft.png</destination>
-			<type>image</type>
-			<uuidstructure>723bc62d-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>723bc62e-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[borderMiddleLeft]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:21,h:1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderMiddleRight.png</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderMiddleRight.png</destination>
-			<type>image</type>
-			<uuidstructure>72408121-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>72408122-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[borderMiddleRight]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:21,h:1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderTopCenter.png</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderTopCenter.png</destination>
-			<type>image</type>
-			<uuidstructure>7242f225-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>7242f226-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[borderTopCenter]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:1,h:21]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderTopLeft.png</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderTopLeft.png</destination>
-			<type>image</type>
-			<uuidstructure>7247ad19-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>7247ad1a-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[borderTopLeft]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:21,h:21]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderTopRight.png</source>
-			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/resources/images/ie6/borderTopRight.png</destination>
-			<type>image</type>
-			<uuidstructure>724c680d-dd10-11e0-aa46-8756953fbf24</uuidstructure>
-			<uuidresource>724c680e-dd10-11e0-aa46-8756953fbf24</uuidresource>
-			<datelastmodified>Mon, 12 Sep 2011 07:25:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 12 Sep 2011 07:25:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[borderTopRight]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:21,h:21]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/modules/com.alkacon.opencms.v8.photoalbum/schemas</destination>
 			<type>folder</type>
 			<uuidstructure>923e89b0-dac1-11e0-a211-8756953fbf24</uuidstructure>
@@ -951,5 +574,30 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/alkacon-v8-photoalbum_big.png</source>
+			<destination>system/workplace/resources/filetypes/alkacon-v8-photoalbum_big.png</destination>
+			<type>image</type>
+			<uuidstructure>86d01890-06fe-11e1-9042-6f6871313691</uuidstructure>
+			<uuidresource>86d01891-06fe-11e1-9042-6f6871313691</uuidresource>
+			<datelastmodified>Fri, 04 Nov 2011 16:03:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 04 Nov 2011 16:03:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[v8-photoalbum_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 	</files>
 </export>
+
