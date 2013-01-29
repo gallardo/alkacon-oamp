@@ -28,12 +28,22 @@
 
 	<property file="${basedir}/alkacon.properties" />
 
+	<!--
+		if, foreach, trhow, trycatch, switch, outofdate, runtarget, timestampselector,
+		propertycopy, osfamily, shellscript, pathtofileset, propertyselector, propertyregex,
+		sortlist, urlencode, compilewithwalls, forget, antcallback, antfetch, assert, bool,
+		limit, math, post, stopwatch, var, initfile, antclipse, antserver, remoteant, for
+		isgreaterthan, islessthan, ispropertyfalse, ispropertytrue
+	-->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 		<classpath>
 			<pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar" />
 		</classpath>
 	</taskdef>
 
+	<!--
+		selectionprompt, readxmlproperty, selectiontreeprompt, ensuredirmanifest
+	-->
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
 		<classpath>
 			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.1.jar" />
@@ -409,6 +419,9 @@
 		<if>
 			<available file="${module.output.jar}" />
 			<then>
+				<echo message="Copying to tomcat.home/webapps/app.name/WEB-INF/lib:" />
+				<echo message="tomcat.home: ${tomcat.home}" />
+				<echo message="app.name: ${app.name}" />
 				<copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
 					<fileset dir="${module.output.jar}" includes="*.jar" />
 				</copy>
