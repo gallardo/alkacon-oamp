@@ -15,7 +15,7 @@
 		- selection: module selection based on modules.common.selection property
 		- all: module selection based on modules.common.all property defined in the all-modules.properties file
 	-->
-	<property name="modules.selection.mode" value="selection" />
+	<property name="modules.selection.mode" value="interactive" />
 
 	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 		<classpath>
