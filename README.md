@@ -56,17 +56,18 @@ $ ant
 
 Notice that if you are building all modules, there is one module (`com.alkacon.opencms.oampdemo`) that also depends upon `modules-v7`. To build it, you have to pass to `ant` the directory where the `modules-v7` sources are. If you followed this instructions:
 ```
-$ ant -Dexternaldirectories=~/src/opencms/modules-v7
+$ ant -Dexternaldirectories=/home/myuser/src/opencms/modules-v7
 ```
+Note.- `externaldirectories` must be an absolute path (tilde is not expanded!).
 
 To automate the build process, you can skip the selection dialog and have `ant` build everything:
 ```
-$ ant -Dexternaldirectories=~/src/opencms/modules-v7 -Dmodules.selection.mode=all
+$ ant -Dexternaldirectories=/home/myuser/src/opencms/modules-v7 -Dmodules.selection.mode=all
 ```
 
 or you can configure the modules to build setting the build variable `modules.selection` (for example, edit `alkacon.properties`) and have `ant` build only the selected modules:
 ```
-$ ant -Dexternaldirectories=~/src/opencms/modules-v7 -Dmodules.selection.mode=selection
+$ ant -Dexternaldirectories=/home/myuser/src/opencms/modules-v7 -Dmodules.selection.mode=selection
 ```
 
 
