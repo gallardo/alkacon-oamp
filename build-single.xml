@@ -9,6 +9,7 @@
 	<property name="opencms.input.warfiles" location="${opencms.input}/webapp" />
 	<property name="opencms.input.libs.runtime" location="${opencms.input}/lib/runtime" />
 	<property name="opencms.input.libs.compile" location="${opencms.input}/lib/compile" />
+	<property name="opencms.output.jars-components" location="${opencms.output}/build/jars-components" />
 	<property name="opencms.core.lib" location="${opencms.output}/build/jars-core" />
 
 	<property name="oamp.input" location="${basedir}" />
@@ -49,9 +50,9 @@
 	-->
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
 		<classpath>
+			<pathelement location="${opencms.output.jars-components}/ant-opencms.jar" />
 			<pathelement location="${opencms.input.libs.compile}/ant.jar" />
 			<pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar" />
-			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.2.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.8.3.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.1.jar" />
 			<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
@@ -152,6 +153,7 @@
 					<else>
 						<!-- It belongs to opencms tree. -->
 						<echo level="verbose" message="[${module.name}/@{dependency}] ...opencms dependency detected" />
+						<!-- This isn't true if the module belongs to externaldirectories, but it doesn't matter: the build scripts use only the module name in this case -->
 						<property name="@{dependency}.input" value="${opencms.input}/modules/@{dependency}" />
 						<property name="@{dependency}.output.classes" location="${opencms.output}/build/classes-@{dependency}" />
 						<property name="@{dependency}.output.jar" location="${opencms.output}/build/jars-@{dependency}" />
