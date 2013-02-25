@@ -37,7 +37,7 @@ $ git clone https://github.com/alkacon/modules-v7.git
    Note that to build all modules, you need `opencms-core` and `modules-v7`.
 
 ###3. Configure the build###
-Edit `alkacon.properties` to fit your directory structure. If you have followed this instructions, you should be fine. The file has some comments that should already help, but just in case, the most important variables to set are:
+Edit `alkacon-oamp/alkacon.properties` to fit your directory structure. If you have followed this instructions, you should be fine. The file has some comments that should already help, but just in case, the most important variables to set are:
 ```
 # Where are opencms-core modules and build scripts
 opencms.input
@@ -51,6 +51,7 @@ oamp.output
 ###4. Build###
 Build the artifacts. By default, you will be asked what modules to build:
 ```
+$ cd alkacon-oamp
 $ ant 
 ```
 
