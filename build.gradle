@@ -55,7 +55,6 @@ modules_oamp_all.split(',').each{ moduleName ->
             println "found GWT module $gwtModule"
             def nonValidatingParser = new XmlParser(false,false,true)
             nonValidatingParser.getXMLReader().setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
-            def nonValidatingParser = new XmlParser(factory.newSAXParser().getXMLReader());
             def moduleXml = nonValidatingParser.parse(srcGwtDir.toString()+"/" +gwtModule.replaceAll('\\.','/')+'.gwt.xml')
             gwtRename = moduleXml['@rename-to']
             if (gwtRename==null){
