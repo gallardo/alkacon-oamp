@@ -11,18 +11,18 @@ CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response
 
 <cms:formatter var="content" val="value">
     <div>
-        <%--
         <div class="box ${cms.element.settings.boxschema}">
-            --%>
 
             <%-- show optional text element above calendar entries --%>
             <c:if test="${content.value.Title.exists}">
                 ${content.value.Title}
             </c:if>
-            <c:set var="defaultView">${content.value.DefaultView}</c:set>
-            <%--
+            <%-- 
+                From calendarview.xsd: configuration="0:%(key.calendar.default.view.day)|1:%(key.calendar.default.view.week)|2:%(key.calendar.default.view.month)"
+                Default: month view
+            --%>
+            <c:set var="defaultView">${empty defaultView ? 2 : content.value.DefaultView}</c:set>
             <div class="cal_wrapper">
-                --%>
                 <%
 
 
@@ -49,13 +49,11 @@ CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response
                 currYear = Integer.parseInt(pYear);
                 }
 
-                // Calendar documentation: http://arshaw.com/fullcalendar/
+                // Calendar documentation: http://fullcalendar.io/
                 %>
-                <link rel='stylesheet' type='text/css' href="<cms:link>/system/modules/com.alkacon.opencms.v8.calendar/resources/fullcalendar.css</cms:link>" />
-                <script type="text/javascript" src="<cms:link>/system/modules/com.alkacon.opencms.v8.calendar/resources/fullcalendar.min.js</cms:link>"></script>
-                <script type="text/javascript" src="<cms:link>/system/modules/com.alkacon.opencms.v8.calendar/resources/jquery.qtip.min.js</cms:link>"></script>
                 <script type="text/javascript">
 
+                $(document).ready(function () {
                     var calItemsJsp = '<%= cms.link("/system/modules/com.alkacon.opencms.v8.calendar/pages/modern_items.jsp") %>';
 
                     function calendarCenterLoad() {
@@ -65,101 +63,80 @@ CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response
                     function calendarCenterShow(cDay, cMonth, cYear) {
 
                         $("#calendarcenter").fullCalendar({
-                            // calendar options
-                            // date to show
-                            year: cYear,
-                            month: cMonth,
-                            date: cDay,
+                            defaultDate: moment({year: cYear, month: cMonth, date: cDay}),
                             editable: false,
                             allDayDefault: false,
-                            //defaultView: "basicDay",
-
-                            dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-                            dayNamesShort: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-                            monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                            monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                            timeFormat: 'H:mm{ - H:mm}',
-                            titleFormat: {
-                                month: 'MMMM yyyy', // September 2009
-                                week: "d.[ MMM][ yyyy]{ '—' d. MMM yyyy}", // 7. - 13. Sep 2009
-                                day: 'dddd, d. MMM yyyy'                  // Dienstag, 8. Sep 8 2009
-                            },
-                            columnFormat: {
-                                month: 'ddd', // Mo
-                                week: 'ddd, d.M.', // Mo, 7.12.
-                                day: 'dddd, d.M.'  // Montag 7.12.
-                            },
+                            defaultView: ["basicDay","basicWeek","month"][${defaultView}],
+                            lang: '${locale}',
+                            timeFormat: 'H:mm',
                             header: {
                                 left: 'prev,next today',
                                 center: 'title',
                                 right: 'month,basicWeek,basicDay'
                             },
-                            buttonText: {
-                                prev: '&nbsp;◄&nbsp;', // left triangle
-                                next: '&nbsp;►&nbsp;', // right triangle
-                                prevYear: '&nbsp;&lt;&lt;&nbsp;', // <<
-                                nextYear: '&nbsp;&gt;&gt;&nbsp;', // >>
-                                today: 'Today',
-                                month: 'Month',
-                                week: 'Week',
-                                day: 'Day'
-                            },
+                            <%--
+                            // XXX: AG 2015-03-17 Doesn't render in its place!
                             eventRender: function (event, element) {
                                 element.qtip({
-                                    content: event.description,
+                                    content: {
+                                        title: { text: event.title },
+                                        text: '<span class="title">Start: </span>'
+                                            + event.start.format('hh:mm')
+                                            + '<br><span class="title">Description: </span>'
+                                            + event.description
+                                    },
+                                    show: { solo: true },
                                     style: {
+                                        width: 200,
+                                        padding: 5,
+                                        color: 'red',
+                                        textAlign: 'left',
+                                        border: {
+                                           width: 1,
+                                           radius: 3
+                                        },
                                         corner: "topLeft",
-                                        tip: "leftTop",
+                                        tip: "topLeft",
                                         name: "light"
                                     }
                                 });
-                                //element.children("a").css("background-color", "pink");
-                                //element.children("a").children("span").css("background-color", "pink");
-
                             },
-                            events: function (start, end, callback) {
-                                $.post(calItemsJsp, {
-                                    uri: "<%= cms.getRequestContext().getUri() %>",
-                                    __locale: "<%= cms.getRequestContext().getLocale() %>",
-                                    sYear: start.getFullYear(),
-                                    sMonth: start.getMonth(),
-                                    sDay: start.getDate(),
-                                    eYear: end.getFullYear(),
-                                    eMonth: end.getMonth(),
-                                    eDay: end.getDate()},
-                                function (data) {
-                                    var events = eval(data);
-                                    callback(events);
-                                }
+                            --%>
+                            events: function (start, end, timezone, callback) {
+                                $.post(calItemsJsp, 
+                                    {
+                                        uri: "<%= cms.getRequestContext().getUri() %>",
+                                        __locale: "<%= cms.getRequestContext().getLocale() %>",
+                                        sYear: start.year(),
+                                        sMonth: start.month(),
+                                        sDay: start.date(),
+                                        eYear: end.year(),
+                                        eMonth: end.month(),
+                                        eDay: end.date()
+                                    },
+                                    function (data) {
+                                        var events = eval(data);
+                                        callback(events);
+                                    }
                                 );
                             },
-                            firstDay: 1,
-                            weekMode: "liquid"
-
+                            fixedWeekCount: false
                         });
-                        $("#calendarcenterload").remove();
-
                     }
-
-                    window.onload = calendarCenterLoad;
+                    
+                    $("#calendarcenterload").remove();
+                    calendarCenterLoad();
+                });
 
 
                 </script>
 
-                <%--  
-                --%>
                 <div class="element">
                     <div id="calendarcenter">
                         <div id="calendarcenterload" style="text-align: center;"><img src="<%= cms.link("/system/modules/com.alkacon.opencms.v8.calendar/resources/load.gif") %>" alt="" style="padding: 24px 8px;" /></div>
                     </div>
                 </div>
-                <%--  
-                --%>
-                <%--  
             </div>
-            --%>
-            <%--  
         </div>
-        --%>
     </div>
 </cms:formatter>
