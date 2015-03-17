@@ -21,7 +21,7 @@ CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response
                 From calendarview.xsd: configuration="0:%(key.calendar.default.view.day)|1:%(key.calendar.default.view.week)|2:%(key.calendar.default.view.month)"
                 Default: month view
             --%>
-            <c:set var="defaultView">${empty defaultView ? 2 : content.value.DefaultView}</c:set>
+            <c:set var="defaultView">${empty content.value.DefaultView ? 2 : content.value.DefaultView}</c:set>
             <div class="cal_wrapper">
                 <%
 
