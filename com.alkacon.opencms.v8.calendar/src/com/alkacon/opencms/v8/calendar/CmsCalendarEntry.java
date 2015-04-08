@@ -109,7 +109,7 @@ public class CmsCalendarEntry {
      * @param calendarView the calendar view 
      * @return the matching calendar entries
      */
-    public List matchCalendarView(I_CmsCalendarView calendarView) {
+    public List<CmsCalendarEntry> matchCalendarView(I_CmsCalendarView calendarView) {
 
         return m_entryDate.matchCalendarView(this, calendarView);
     }
