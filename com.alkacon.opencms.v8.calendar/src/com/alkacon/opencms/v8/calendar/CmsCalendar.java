@@ -50,14 +50,14 @@ import java.util.List;
 public class CmsCalendar {
 
     /** Contains the configured calendar entries. */
-    private List m_entries;
+    private List<CmsCalendarEntry> m_entries;
 
     /**
      * Default constructor, creates an empty calendar without entries.<p>
      */
     public CmsCalendar() {
 
-        m_entries = new ArrayList();
+        m_entries = new ArrayList<CmsCalendarEntry>();
     }
 
     /**
@@ -65,7 +65,7 @@ public class CmsCalendar {
      * 
      * @param entries the list of entries for the calendar day
      */
-    public CmsCalendar(List entries) {
+    public CmsCalendar(List<CmsCalendarEntry> entries) {
 
         m_entries = entries;
     }
@@ -85,7 +85,7 @@ public class CmsCalendar {
      * 
      * @return all calendar entries
      */
-    public List getEntries() {
+    public List<CmsCalendarEntry> getEntries() {
 
         return m_entries;
     }
@@ -97,13 +97,13 @@ public class CmsCalendar {
      * 
      * @return the matching entries for the calendar view
      */
-    public List getEntries(I_CmsCalendarView calendarView) {
+    public List<CmsCalendarEntry> getEntries(I_CmsCalendarView calendarView) {
 
-        List result = new ArrayList();
+        List<CmsCalendarEntry> result = new ArrayList<CmsCalendarEntry>();
 
         for (int i = 0; i < m_entries.size(); i++) {
-            CmsCalendarEntry entry = (CmsCalendarEntry)m_entries.get(i);
-            List matchedEntries = entry.matchCalendarView(calendarView);
+            CmsCalendarEntry entry = m_entries.get(i);
+            List<CmsCalendarEntry> matchedEntries = entry.matchCalendarView(calendarView);
             if (matchedEntries.size() > 0) {
                 // add matching entries to result list
                 result.addAll(matchedEntries);
@@ -123,7 +123,7 @@ public class CmsCalendar {
      * 
      * @param entries the list of entries for the calendar day
      */
-    public void setEntries(List entries) {
+    public void setEntries(List<CmsCalendarEntry> entries) {
 
         m_entries = entries;
     }
