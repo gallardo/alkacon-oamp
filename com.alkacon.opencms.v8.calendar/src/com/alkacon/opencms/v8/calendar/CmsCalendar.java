@@ -101,8 +101,7 @@ public class CmsCalendar {
 
         List<CmsCalendarEntry> result = new ArrayList<CmsCalendarEntry>();
 
-        for (int i = 0; i < m_entries.size(); i++) {
-            CmsCalendarEntry entry = m_entries.get(i);
+        for (CmsCalendarEntry entry : m_entries) {
             List<CmsCalendarEntry> matchedEntries = entry.matchCalendarView(calendarView);
             if (matchedEntries.size() > 0) {
                 // add matching entries to result list

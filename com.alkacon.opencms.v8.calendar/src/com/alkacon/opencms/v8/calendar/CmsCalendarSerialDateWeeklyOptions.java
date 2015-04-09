@@ -132,11 +132,9 @@ public class CmsCalendarSerialDateWeeklyOptions extends A_CmsCalendarSerialDateO
         return m_weeklyInterval;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarSerialDateOptions#matchCalendarView(com.alkacon.opencms.v8.calendar.CmsCalendarEntry, com.alkacon.opencms.v8.calendar.I_CmsCalendarView, int)
-     */
     @Override
-    public List<CmsCalendarEntry> matchCalendarView(CmsCalendarEntry entry, I_CmsCalendarView calendarView, int maxCount) {
+    public List<CmsCalendarEntry> matchCalendarView(CmsCalendarEntry entry,
+            I_CmsCalendarView calendarView, int maxCount) {
 
         List<CmsCalendarEntry> result = new ArrayList<CmsCalendarEntry>();
         int matches = 0;
@@ -148,7 +146,7 @@ public class CmsCalendarSerialDateWeeklyOptions extends A_CmsCalendarSerialDateO
         // loop the view date ranges
         for (int i = 0; i < calendarView.getDates().size(); i++) {
             // get the current view date object
-            CmsCalendarEntryDate viewDate = (CmsCalendarEntryDate)calendarView.getDates().get(i);
+            CmsCalendarEntryDate viewDate = calendarView.getDates().get(i);
             // get the start and end times of the view
             long viewStart = viewDate.getStartDate().getTimeInMillis();
             long viewEnd = viewDate.getEndDate().getTimeInMillis();

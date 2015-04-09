@@ -54,7 +54,7 @@ public class CmsCalendarSerialDateYearlyOptions extends A_CmsCalendarSerialDateO
     /** The number of the day of the month for the serial calendar entry. */
     private int m_dayOfMonth;
 
-    /** The monthfor the serial calendar entry. */
+    /** The month for the serial calendar entry. */
     private int m_month;
 
     /** Indicates if the specified week day should be used or only the number of the day of the month. */
@@ -136,9 +136,7 @@ public class CmsCalendarSerialDateYearlyOptions extends A_CmsCalendarSerialDateO
         return m_month;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarSerialDateOptions#getSerialType()
-     */
+    @Override
     public int getSerialType() {
 
         return I_CmsCalendarSerialDateOptions.TYPE_YEARLY;
@@ -167,9 +165,11 @@ public class CmsCalendarSerialDateYearlyOptions extends A_CmsCalendarSerialDateO
     /**
      * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarSerialDateOptions#matchCalendarView(com.alkacon.opencms.v8.calendar.CmsCalendarEntry, com.alkacon.opencms.v8.calendar.I_CmsCalendarView, int)
      */
-    public List matchCalendarView(CmsCalendarEntry entry, I_CmsCalendarView calendarView, int maxCount) {
+    @Override
+    public List<CmsCalendarEntry> matchCalendarView(CmsCalendarEntry entry,
+            I_CmsCalendarView calendarView, int maxCount) {
 
-        List result = new ArrayList();
+        List<CmsCalendarEntry> result = new ArrayList<CmsCalendarEntry>();
         int matches = 0;
 
         CmsCalendarEntryDateSerial entryDate = (CmsCalendarEntryDateSerial)entry.getEntryDate();
@@ -179,7 +179,7 @@ public class CmsCalendarSerialDateYearlyOptions extends A_CmsCalendarSerialDateO
         // loop the view date ranges
         for (int i = 0; i < calendarView.getDates().size(); i++) {
             // get the current view date object
-            CmsCalendarEntryDate viewDate = (CmsCalendarEntryDate)calendarView.getDates().get(i);
+            CmsCalendarEntryDate viewDate = calendarView.getDates().get(i);
             // get the start and end times of the view
             long viewStart = viewDate.getStartDate().getTimeInMillis();
             long viewEnd = viewDate.getEndDate().getTimeInMillis();

@@ -59,12 +59,8 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
     private boolean m_everyWorkingDay;
 
     /** The working days Integer values as List. */
-    private List m_workingDaysList = Arrays.asList(new Integer[] {
-        new Integer(Calendar.MONDAY),
-        new Integer(Calendar.TUESDAY),
-        new Integer(Calendar.WEDNESDAY),
-        new Integer(Calendar.THURSDAY),
-        new Integer(Calendar.FRIDAY)});
+    private List<Integer> m_workingDaysList = Arrays.asList(new Integer[] {
+        Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY});
 
     /**
      * Creates an initialized serial date daily options object with the standard daily interval options.<p>
@@ -120,9 +116,7 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
         return m_dailyInterval;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarSerialDateOptions#getSerialType()
-     */
+    @Override
     public int getSerialType() {
 
         return I_CmsCalendarSerialDateOptions.TYPE_DAILY;
@@ -133,7 +127,7 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
      * 
      * @return the working days Integer values
      */
-    public List getWorkingDays() {
+    public List<Integer> getWorkingDays() {
 
         return m_workingDaysList;
     }
@@ -148,12 +142,11 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
         return m_everyWorkingDay;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarSerialDateOptions#matchCalendarView(com.alkacon.opencms.v8.calendar.CmsCalendarEntry, com.alkacon.opencms.v8.calendar.I_CmsCalendarView, int)
-     */
-    public List matchCalendarView(CmsCalendarEntry entry, I_CmsCalendarView calendarView, int maxCount) {
+    @Override
+    public List<CmsCalendarEntry> matchCalendarView(CmsCalendarEntry entry,
+            I_CmsCalendarView calendarView, int maxCount) {
 
-        List result = new ArrayList();
+        List<CmsCalendarEntry> result = new ArrayList<CmsCalendarEntry>();
         int matches = 0;
 
         CmsCalendarEntryDateSerial entryDate = (CmsCalendarEntryDateSerial)entry.getEntryDate();
@@ -163,7 +156,7 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
         // loop the view date ranges
         for (int i = 0; i < calendarView.getDates().size(); i++) {
             // get the current view date object
-            CmsCalendarEntryDate viewDate = (CmsCalendarEntryDate)calendarView.getDates().get(i);
+            CmsCalendarEntryDate viewDate = calendarView.getDates().get(i);
             // get the start and end times of the view
             long viewStart = viewDate.getStartDate().getTimeInMillis();
             long viewEnd = viewDate.getEndDate().getTimeInMillis();
@@ -191,9 +184,8 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
                 }
 
                 // get the current week day
-                int runWeekDay = runDate.get(Calendar.DAY_OF_WEEK);
-                Integer runWeekDayInteger = new Integer(runWeekDay);
-                if (!isEveryWorkingDay() || (isEveryWorkingDay() && getWorkingDays().contains(runWeekDayInteger))) {
+                Integer runWeekDay = runDate.get(Calendar.DAY_OF_WEEK);
+                if (!isEveryWorkingDay() || (isEveryWorkingDay() && getWorkingDays().contains(runWeekDay))) {
                     // the current day contains a series entry
                     occurences++;
                     long entryStart = runDate.getTimeInMillis() + entryDate.getStartTime();
@@ -252,7 +244,7 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
      * 
      * @param workingDays the working days as Integer values
      */
-    public void setWorkingDays(List workingDays) {
+    public void setWorkingDays(List<Integer> workingDays) {
 
         m_workingDaysList = workingDays;
     }
