@@ -129,105 +129,78 @@ public class CmsCalendarEntryData implements I_CmsCalendarEntryData {
         m_showTime = showTime;
     }
 
-    /**
-     * @see java.lang.Object#clone()
-     */
     public Object clone() {
 
         return new CmsCalendarEntryData(m_title, m_description, m_type, m_detailUri, m_weekdayStatus, m_showTime);
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarEntryData#getDescription()
-     */
+    @Override
     public String getDescription() {
 
         return m_description;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarEntryData#getDetailUri()
-     */
+    @Override
     public String getDetailUri() {
 
         return m_detailUri;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarEntryData#getTitle()
-     */
+    @Override
     public String getTitle() {
 
         return m_title;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarEntryData#getType()
-     */
+    @Override
     public String getType() {
 
         return m_type;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarEntryData#getWeekdayStatus()
-     */
+    @Override
     public int getWeekdayStatus() {
 
         return m_weekdayStatus;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarEntryData#isShowTime()
-     */
+    @Override
     public boolean isShowTime() {
 
         return m_showTime;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarEntryData#setDescription(java.lang.String)
-     */
+    @Override
     public void setDescription(String description) {
 
         m_description = description;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarEntryData#setDetailUri(java.lang.String)
-     */
+    @Override
     public void setDetailUri(String detailUri) {
 
         m_detailUri = detailUri;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarEntryData#setShowTime(boolean)
-     */
+    @Override
     public void setShowTime(boolean showTime) {
 
         m_showTime = showTime;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarEntryData#setTitle(java.lang.String)
-     */
+    @Override
     public void setTitle(String title) {
 
         m_title = title;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarEntryData#setType(java.lang.String)
-     */
+    @Override
     public void setType(String type) {
 
         m_type = type;
     }
 
-    /**
-     * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarEntryData#setWeekdayStatus(int)
-     */
+    @Override
     public void setWeekdayStatus(int weekdayStatus) {
 
         m_weekdayStatus = weekdayStatus;
