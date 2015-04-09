@@ -83,10 +83,14 @@ public class CmsCalendarMonthBean extends CmsCalendarDisplay {
      * Constructor with an initialized calendar object and JSP action element.<p>
      * 
      * @param jsp the JSP action element to use
+     * @deprecated Use the default constructor and call {@link #init(org.opencms.jsp.CmsJspActionElement) }
      */
+    @Deprecated
     public CmsCalendarMonthBean(CmsJspActionElement jsp) {
-
-        super(jsp);
+        throw new UnsupportedOperationException("CmsCalendarDisplay(CmsJspActionElement)"
+                + " not supported anymore."
+                + " Use the default constructor and invoke"
+                + " init(org.opencms.jsp.CmsJspActionElement)");
     }
 
     /**
@@ -381,6 +385,7 @@ public class CmsCalendarMonthBean extends CmsCalendarDisplay {
      * 
      * @see com.alkacon.opencms.v8.calendar.CmsCalendarDisplay#init(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     public void init(CmsJspActionElement jsp) {
 
         // call super initialisation
