@@ -210,6 +210,7 @@ public class CmsCalendarEntryDateSerial extends CmsCalendarEntryDate {
      * 
      * @return true if the date entry is a serial date, otherwise false
      */
+    @Override
     public boolean isSerialDate() {
 
         return ((m_serialEndType != -1) && (m_serialOptions != null));
@@ -222,7 +223,8 @@ public class CmsCalendarEntryDateSerial extends CmsCalendarEntryDate {
      * @param calendarView the calendar view
      * @return the matching calendar entries
      */
-    public List matchCalendarView(CmsCalendarEntry entry, I_CmsCalendarView calendarView) {
+    @Override
+    public List<CmsCalendarEntry> matchCalendarView(CmsCalendarEntry entry, I_CmsCalendarView calendarView) {
 
         return matchCalendarView(entry, calendarView, Integer.MAX_VALUE);
     }
@@ -235,7 +237,7 @@ public class CmsCalendarEntryDateSerial extends CmsCalendarEntryDate {
      * @param maxCount the maximum count of returned serial entries
      * @return the matching calendar entries
      */
-    public List matchCalendarView(CmsCalendarEntry entry, I_CmsCalendarView calendarView, int maxCount) {
+    public List<CmsCalendarEntry> matchCalendarView(CmsCalendarEntry entry, I_CmsCalendarView calendarView, int maxCount) {
 
         if (isSerialDate()) {
             return m_serialOptions.matchCalendarView(entry, calendarView, maxCount);

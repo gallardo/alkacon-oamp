@@ -97,10 +97,11 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
     /**
      * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarSerialDateOptions#getConfigurationValuesAsMap()
      */
-    public Map getConfigurationValuesAsMap() {
+    @Override
+    public Map<String,String> getConfigurationValuesAsMap() {
 
         // create the Map containing the date settings
-        Map values = new HashMap();
+        Map<String,String> values = new HashMap<String,String>();
 
         // put interval and working days flag
         values.put(I_CmsCalendarSerialDateOptions.CONFIG_INTERVAL, String.valueOf(getDailyInterval()));

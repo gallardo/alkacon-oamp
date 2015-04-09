@@ -102,10 +102,11 @@ public class CmsCalendarSerialDateYearlyOptions extends A_CmsCalendarSerialDateO
     /**
      * @see com.alkacon.opencms.v8.calendar.I_CmsCalendarSerialDateOptions#getConfigurationValuesAsMap()
      */
-    public Map getConfigurationValuesAsMap() {
+    @Override
+    public Map<String,String> getConfigurationValuesAsMap() {
 
         // create the Map containing the date settings
-        Map values = new HashMap();
+        Map<String,String> values = new HashMap<String,String>();
 
         // put day of month, week days and month to Map
         values.put(I_CmsCalendarSerialDateOptions.CONFIG_DAY_OF_MONTH, String.valueOf(getDayOfMonth()));

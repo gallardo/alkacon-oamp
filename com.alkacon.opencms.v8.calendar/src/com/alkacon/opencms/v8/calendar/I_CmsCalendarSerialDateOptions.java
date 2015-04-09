@@ -123,7 +123,7 @@ public interface I_CmsCalendarSerialDateOptions {
      * 
      * @return the configuration values for the serial date as Map
      */
-    Map getConfigurationValuesAsMap();
+    Map<String,String> getConfigurationValuesAsMap();
 
     /**
      * Returns a list with changes to the serial date containing {@link CmsCalendarSerialDateChange} objects.<p>
@@ -154,7 +154,7 @@ public interface I_CmsCalendarSerialDateOptions {
      * @param maxCount the maximum count of returned serial entries
      * @return the matching calendar entries
      */
-    List matchCalendarView(CmsCalendarEntry entry, I_CmsCalendarView calendarView, int maxCount);
+    List<CmsCalendarEntry> matchCalendarView(CmsCalendarEntry entry, I_CmsCalendarView calendarView, int maxCount);
 
     /**
      * Sets the list with changes to the serial date.<p>
