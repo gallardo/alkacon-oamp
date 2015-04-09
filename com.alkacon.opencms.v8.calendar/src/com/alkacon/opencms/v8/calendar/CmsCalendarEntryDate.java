@@ -212,13 +212,15 @@ public class CmsCalendarEntryDate {
      * @param calendarView the calendar view 
      * @return the matching calendar entries
      */
-    public List matchCalendarView(CmsCalendarEntry entry, I_CmsCalendarView calendarView) {
+    public List<CmsCalendarEntry> matchCalendarView(CmsCalendarEntry entry,
+            I_CmsCalendarView calendarView) {
 
-        List result = new ArrayList();
-        Comparator comparator = calendarView.getComparator();
+        List<CmsCalendarEntry> result = new ArrayList<CmsCalendarEntry>();
+        Comparator<CmsCalendarEntryDate> comparator =
+                calendarView.getComparator();
 
         for (int i = 0; i < calendarView.getDates().size(); i++) {
-            CmsCalendarEntryDate viewDate = (CmsCalendarEntryDate)calendarView.getDates().get(i);
+            CmsCalendarEntryDate viewDate = calendarView.getDates().get(i);
 
             // check if the entry date matches the view date, if so, add it to the list
             if (comparator.compare(viewDate, this) == 0) {
