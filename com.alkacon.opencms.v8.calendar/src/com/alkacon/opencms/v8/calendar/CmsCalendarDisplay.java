@@ -179,11 +179,14 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * Constructor with initialized calendar object and JSP action element.<p>
      * 
      * @param jsp the JSP action element to use
+     * @deprecated Use the default constructor and call {@link #init(org.opencms.jsp.CmsJspActionElement) }
      */
+    @Deprecated
     public CmsCalendarDisplay(CmsJspActionElement jsp) {
-
-        super();
-        init(jsp);
+        throw new UnsupportedOperationException("CmsCalendarDisplay(CmsJspActionElement)"
+                + " not supported anymore."
+                + " Use the default constructor and invoke"
+                + " init(org.opencms.jsp.CmsJspActionElement)");
     }
 
     /**
@@ -302,7 +305,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
      */
     public String buildOverviewDayEntry(CmsCalendarEntry entry, boolean timeFirst) {
 
-        StringBuffer result = new StringBuffer(2048);
+        StringBuilder result = new StringBuilder(2048);
         Calendar start = entry.getEntryDate().getStartDate();
         Calendar end = entry.getEntryDate().getEndDate();
 
@@ -1008,7 +1011,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * 
      * @param jsp the JSP action element to use
      */
-    public final void init(CmsJspActionElement jsp) {
+    public void init(CmsJspActionElement jsp) {
 
         // initialize style class
         m_style = new CmsCalendarStyle();
