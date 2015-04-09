@@ -765,7 +765,7 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/com.alkacon.opencms.v8.calendar/pages/modernoverview.html</source>
+      <source>system/modules/com.alkacon.opencms.v8.calendar/pages/modernoverview.html.jsp</source>
       <destination>system/modules/com.alkacon.opencms.v8.calendar/pages/modernoverview.html</destination>
       <type>jsp</type>
       <uuidstructure>0b44f215-217a-11e1-80b6-27f2fbbdf126</uuidstructure>

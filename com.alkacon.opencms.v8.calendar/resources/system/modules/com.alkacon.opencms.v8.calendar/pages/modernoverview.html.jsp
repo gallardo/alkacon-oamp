@@ -1,4 +1,9 @@
-<%@ page session="false" taglibs="c,cms,fmt,fn" buffer="none" import="java.util.*, com.alkacon.opencms.v8.calendar.*, org.opencms.jsp.*, org.opencms.util.*" %>
+<%@ page session="false" buffer="none" %>
+<%@ page import="java.util.*, com.alkacon.opencms.v8.calendar.*, org.opencms.jsp.*, org.opencms.util.*" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
 
 <c:set var="locale" value="${cms:vfs(pageContext).context.locale}" />
 <fmt:setLocale value="${locale}" />
@@ -103,7 +108,7 @@ CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response
                             },
                             --%>
                             events: function (start, end, timezone, callback) {
-                                $.post(calItemsJsp, 
+                                $.get(calItemsJsp, 
                                     {
                                         uri: "<%= cms.getRequestContext().getUri() %>",
                                         __locale: "<%= cms.getRequestContext().getLocale() %>",
