@@ -1452,5 +1452,18 @@
       <relations/>
       <accesscontrol/>
     </file>
+    <file>
+      <destination>system/modules/com.alkacon.opencms.v8.calendar/resources/com.alkacon.opencms.v8.calendar.SerialDateWidget</destination>
+      <type>folder</type>
+      <uuidstructure>c2a6edc3-2751-11e2-b75f-6f7853b7b4b1</uuidstructure>
+      <datelastmodified>Mon, 05 Nov 2012 14:04:48 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Mon, 05 Nov 2012 14:04:48 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
   </files>
 </export>
