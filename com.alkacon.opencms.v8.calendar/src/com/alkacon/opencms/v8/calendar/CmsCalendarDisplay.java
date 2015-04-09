@@ -249,9 +249,9 @@ public class CmsCalendarDisplay extends CmsCalendar {
         String datePattern = holidays.key("calendar.holidays.datepattern");
         DateFormat df = new SimpleDateFormat(datePattern, calendarLocale);
         // get all keys from the bundle
-        Enumeration en = holidays.getResourceBundle().getKeys();
+        Enumeration<String> en = holidays.getResourceBundle().getKeys();
         while (en.hasMoreElements()) {
-            String key = (String)en.nextElement();
+            String key = en.nextElement();
             try {
                 // try to get a valid date from the key
                 Date holidayDate = df.parse(key);
@@ -440,7 +440,8 @@ public class CmsCalendarDisplay extends CmsCalendar {
     }
 
     /**
-     * Returns the HTML to generate a link to a overview page using the specified calendar date.<p>
+     * Returns the HTML to generate a link to an overview page using the
+     * specified calendar date. <p>
      * The needed parameters are added to the given uri.
      * 
      * @param calendar the calendar date to build the link
@@ -452,7 +453,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
     public String createLink(Calendar calendar, String uri, boolean useCmsLink, int viewPeriod) {
 
         if (isUseAjaxLinks()) {
-            StringBuffer ajaxLink = new StringBuffer(64);
+            StringBuilder ajaxLink = new StringBuilder(64);
             String viewType = "";
             switch (viewPeriod) {
                 case PERIOD_DAY:
@@ -477,7 +478,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
             ajaxLink.append(calendar.get(Calendar.YEAR)).append(");");
             return ajaxLink.toString();
         } else {
-            StringBuffer nextLink = new StringBuffer(64);
+            StringBuilder nextLink = new StringBuilder(64);
 
             // append the URI to the JSP
             nextLink.append(uri);
@@ -552,7 +553,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
             if (content.hasValue(NODE_USECONFIG, locale)) {
                 // found the use configuration element, now check the value
                 String useConf = content.getStringValue(getJsp().getCmsObject(), NODE_USECONFIG, locale);
-                if (Boolean.valueOf(useConf).booleanValue()) {
+                if (Boolean.valueOf(useConf)) {
                     // individual configuration should be used, configure collector accordingly
                     I_CmsResourceCollector collector = new CmsConfigurableCollector();
                     collector.setDefaultCollectorParam(calFilePath);
@@ -561,10 +562,12 @@ public class CmsCalendarDisplay extends CmsCalendar {
             }
         } catch (CmsException e) {
             // ignore, the simple default configuration will be used
+            LOG.debug("No configured collector found. " + e.getMessage(),e);
         }
 
         // simple default configuration with calendar entries and serial date entries
-        List defaultConfiguration = new ArrayList();
+        List<CmsCollectorConfiguration> defaultConfiguration =
+                new ArrayList<CmsCollectorConfiguration>();
         defaultConfiguration.add(new CmsCollectorConfiguration("/", RESTYPE_ENTRY, null));
         defaultConfiguration.add(new CmsCollectorConfiguration("/", RESTYPE_ENTRY_SERIAL, null));
 
@@ -578,7 +581,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param type the type of time period
      * @return all entries for the days of the specified range with their corresponding entries as lists
      */
-    public Map getEntriesForCurrentPeriod(int type) {
+    public Map<Date,List<CmsCalendarEntry>> getEntriesForCurrentPeriod(int type) {
 
         Calendar current = getCurrentDate();
         switch (type) {
@@ -591,7 +594,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
             case PERIOD_YEAR:
                 return getEntriesForYear(current.get(Calendar.YEAR));
             default:
-                return new TreeMap();
+                return new TreeMap<Date,List<CmsCalendarEntry>>();
         }
     }
 
@@ -602,7 +605,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param day the day of the year to get the entries for
      * @return the list of calendar entries for the specified day
      */
-    public Map getEntriesForDay(int year, int day) {
+    public Map<Date,List<CmsCalendarEntry>> getEntriesForDay(int year, int day) {
 
         Calendar startDay = new GregorianCalendar(getJsp().getRequestContext().getLocale());
         startDay.set(Calendar.YEAR, year);
@@ -624,16 +627,19 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param endDay the end day of the range
      * @return all entries for the days of the specified range with their corresponding entries as lists
      */
-    public Map getEntriesForDays(Calendar startDay, Calendar endDay) {
+    public Map<Date,List<CmsCalendarEntry>> getEntriesForDays(Calendar startDay, Calendar endDay) {
 
-        Map displayDays = new TreeMap();
+        Map<Date,List<CmsCalendarEntry>> displayDays =
+                new TreeMap<Date,List<CmsCalendarEntry>>();
         // first get all entries to display
-        Map displayEntries = getDisplayedEntries(startDay, endDay);
+        Map<Date,List<CmsCalendarEntry>> displayEntries =
+                getDisplayedEntries(startDay, endDay);
+        
         Calendar runDay = setDayTime(startDay, 0, 0, 0);
         while (true) {
-            List entries = (List)displayEntries.get(runDay.getTime());
+            List<CmsCalendarEntry> entries = displayEntries.get(runDay.getTime());
             if (entries == null) {
-                entries = new ArrayList(0);
+                entries = new ArrayList<CmsCalendarEntry>(0);
             }
             displayDays.put(runDay.getTime(), entries);
 
@@ -659,7 +665,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param month the month to display
      * @return all displayed days of the specified day range with their corresponding entries as lists
      */
-    public Map getEntriesForMonth(int year, int month) {
+    public Map<Date,List<CmsCalendarEntry>> getEntriesForMonth(int year, int month) {
 
         Calendar startDay = new GregorianCalendar(year, month, 1);
         Calendar endDay = new GregorianCalendar(year, month, startDay.getActualMaximum(Calendar.DAY_OF_MONTH));
@@ -678,7 +684,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param week the week of the year to display
      * @return all displayed days of the specified day range with their corresponding entries as lists
      */
-    public Map getEntriesForWeek(int year, int week) {
+    public Map<Date,List<CmsCalendarEntry>> getEntriesForWeek(int year, int week) {
 
         Calendar startDay = new GregorianCalendar(getJsp().getRequestContext().getLocale());
         startDay.set(Calendar.YEAR, year);
@@ -702,7 +708,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param year the year of the month to display
      * @return all displayed days of the specified day range with their corresponding entries as lists
      */
-    public Map getEntriesForYear(int year) {
+    public Map<Date,List<CmsCalendarEntry>> getEntriesForYear(int year) {
 
         Calendar startDay = new GregorianCalendar(getJsp().getRequestContext().getLocale());
         startDay.set(Calendar.YEAR, year);
@@ -732,12 +738,11 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param entries a list of calendar entries
      * @return a list where only "holiday" entries are in the list (holidays are filtered out)
      */
-    public List getHolidayEntries(List entries) {
+    public List<CmsCalendarEntry> getHolidayEntries(List<CmsCalendarEntry> entries) {
 
-        ArrayList result = new ArrayList();
+        List<CmsCalendarEntry> result = new ArrayList<CmsCalendarEntry>();
 
-        for (int j = 0; j < entries.size(); j++) {
-            CmsCalendarEntry entry = (CmsCalendarEntry)entries.get(j);
+        for (CmsCalendarEntry entry : entries) {
             if (entry.getEntryData().getWeekdayStatus() > I_CmsCalendarEntryData.WEEKDAYSTATUS_WORKDAY) {
                 result.add(entry);
             }
@@ -752,20 +757,19 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param entries list of calendar entries with the included holidays
      * @return a string with all holiday included in the given list of calendar entries
      */
-    public String getHolidays(List entries) {
+    public String getHolidays(List<CmsCalendarEntry> entries) {
 
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
 
-        List holidays = getHolidayEntries(entries);
-        Iterator i = holidays.iterator();
-        if (i.hasNext()) {
+        Iterator<CmsCalendarEntry> holidayIt = getHolidayEntries(entries).iterator();
+        if (holidayIt.hasNext()) {
             boolean isFirst = true;
-            while (i.hasNext()) {
+            while (holidayIt.hasNext()) {
                 if (!isFirst) {
                     result.append(" - ");
                 }
-                CmsCalendarEntry entry = (CmsCalendarEntry)i.next();
-                result.append(entry.getEntryData().getTitle());
+                CmsCalendarEntry holiday = holidayIt.next();
+                result.append(holiday.getEntryData().getTitle());
                 isFirst = false;
             }
         }
@@ -801,27 +805,28 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param count the amount of entries to return
      * @return the most current entries
      */
-    public List getMostCurrentEntries(int count) {
+    public List<CmsCalendarEntry> getMostCurrentEntries(int count) {
 
-        List result = new ArrayList(count);
+        List<CmsCalendarEntry> result = new ArrayList<CmsCalendarEntry>(count);
 
         // determine start date
         Calendar startDay = new GregorianCalendar(getJsp().getRequestContext().getLocale());
         startDay.setTimeInMillis(System.currentTimeMillis());
         startDay = setDayTime(startDay, 0, 0, 0);
         // determine current view range
-        Calendar endDay = (GregorianCalendar)startDay.clone();
+        Calendar endDay = (Calendar)startDay.clone();
         endDay.add(Calendar.YEAR, 30);
 
-        List viewDates = new ArrayList(1);
+        List<CmsCalendarEntryDate> viewDates =
+                new ArrayList<CmsCalendarEntryDate>(1);
         CmsCalendarEntryDate viewDate = new CmsCalendarEntryDate(startDay, setDayTime(endDay, 23, 59, 59));
         viewDates.add(viewDate);
         // create the simple view
         CmsCalendarViewSimple calendarView = new CmsCalendarViewSimple(viewDates);
 
-        Iterator i = getEntries().iterator();
-        while (i.hasNext()) {
-            CmsCalendarEntry entry = (CmsCalendarEntry)i.next();
+        Iterator<CmsCalendarEntry> entryIt = getEntries().iterator();
+        while (entryIt.hasNext()) {
+            CmsCalendarEntry entry = entryIt.next();
             if (entry.getEntryDate().isSerialDate()) {
                 // serial date, create entry clones for every future occurance
                 CmsCalendarEntryDateSerial serialDate = (CmsCalendarEntryDateSerial)entry.getEntryDate();
@@ -935,12 +940,11 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param entries a list of calendar entries
      * @return a list where only "real" entries are in the list (holidays are filtered out)
      */
-    public List getRealEntries(List entries) {
+    public List<CmsCalendarEntry> getRealEntries(List<CmsCalendarEntry> entries) {
 
-        ArrayList result = new ArrayList();
+        List<CmsCalendarEntry> result = new ArrayList<CmsCalendarEntry>();
 
-        for (int j = 0; j < entries.size(); j++) {
-            CmsCalendarEntry entry = (CmsCalendarEntry)entries.get(j);
+        for (CmsCalendarEntry entry : entries) {
             if (entry.getEntryData().getWeekdayStatus() <= I_CmsCalendarEntryData.WEEKDAYSTATUS_WORKDAY) {
                 result.add(entry);
             }
@@ -1004,7 +1008,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * 
      * @param jsp the JSP action element to use
      */
-    public void init(CmsJspActionElement jsp) {
+    public final void init(CmsJspActionElement jsp) {
 
         // initialize style class
         m_style = new CmsCalendarStyle();
@@ -1042,7 +1046,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * 
      * @return the List of collected resources using the default resource collector
      */
-    public List initCalendarEntries() {
+    public List<CmsResource> initCalendarEntries() {
 
         return initCalendarEntries(getDefaultCollector());
     }
@@ -1053,9 +1057,9 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param collector the collector to use for collecting the resources
      * @return the List of collected resources using the specified resource collector
      */
-    public List initCalendarEntries(I_CmsResourceCollector collector) {
+    public List<CmsResource> initCalendarEntries(I_CmsResourceCollector collector) {
 
-        List result = null;
+        List<CmsResource> result = null;
         try {
             result = collector.getResults(getJsp().getCmsObject());
             setEntries(createCalendarEntries(
@@ -1069,7 +1073,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
                     Messages.LOG_CALENDAR_RESOURCES_1,
-                    getJsp().getRequestContext().getUri()));
+                    getJsp().getRequestContext().getUri()),e);
             }
         }
         return result;
@@ -1154,20 +1158,20 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param pDescription the name of the property to use for the description
      * @return the calendar entries from the given list of resources and their properties
      */
-    protected List createCalendarEntries(
-        List resources,
+    protected List<CmsCalendarEntry> createCalendarEntries(
+        List<CmsResource> resources,
         String pStartDate,
         String pEndDate,
         String pTitle,
         String pDescription) {
 
         CmsObject cms = getJsp().getCmsObject();
-        List result = new ArrayList(resources.size());
+        List<CmsCalendarEntry> result = new ArrayList<CmsCalendarEntry>(resources.size());
         // instanciate default serial date content class
         I_CmsCalendarSerialDateContent defaultContent = new CmsSerialDateContentBean();
         for (int i = resources.size() - 1; i > -1; i--) {
             // loop the resources
-            CmsResource res = (CmsResource)resources.get(i);
+            CmsResource res = resources.get(i);
             // read the title of the resource
             String title = getPropertyValue(cms, res, pTitle, null);
             // read the start date property
@@ -1193,7 +1197,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
                 // create the calendar entry data
                 String resPath = getJsp().getRequestContext().getSitePath(res);
                 CmsCalendarEntryData entryData = new CmsCalendarEntryData(title, description, type, resPath, 0);
-                entryData.setShowTime(Boolean.valueOf(showTimeStr).booleanValue());
+                entryData.setShowTime(Boolean.valueOf(showTimeStr));
 
                 // create the calendar entry date
                 CmsCalendarEntryDate entryDate = null;
@@ -1275,10 +1279,10 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @param endDay the end day of the range
      * @return a sorted Map of entries for the given date range
      */
-    private Map getDisplayedEntries(Calendar startDay, Calendar endDay) {
-
+    private Map<Date,List<CmsCalendarEntry>> getDisplayedEntries(Calendar startDay, Calendar endDay) {
+        
         // create the list of view dates
-        List viewDates = new ArrayList(1);
+        List<CmsCalendarEntryDate> viewDates = new ArrayList<CmsCalendarEntryDate>(1);
         CmsCalendarEntryDate viewDate = new CmsCalendarEntryDate(setDayTime(startDay, 0, 0, 0), setDayTime(
             endDay,
             23,
@@ -1289,20 +1293,21 @@ public class CmsCalendarDisplay extends CmsCalendar {
         // create the simple view
         CmsCalendarViewSimple view = new CmsCalendarViewSimple(viewDates);
         // get all entries for the view range
-        List entries = getEntries(view);
+        List<CmsCalendarEntry> entries = getEntries(view);
 
-        Map displayEntries = new TreeMap();
+        Map<Date,List<CmsCalendarEntry>> displayEntries =
+                new TreeMap<Date,List<CmsCalendarEntry>>();
 
-        for (int i = 0; i < entries.size(); i++) {
-            CmsCalendarEntry entry = (CmsCalendarEntry)entries.get(i);
+        for (CmsCalendarEntry entry : entries) {
             // get the entry start date
             Calendar entryStart = (Calendar)entry.getEntryDate().getStartDate().clone();
             entryStart = setDayTime(entryStart, 0, 0, 0);
             // get the list of entries for the start day
-            List dayEntries = (List)displayEntries.get(entryStart.getTime());
+            List<CmsCalendarEntry> dayEntries =
+                    displayEntries.get(entryStart.getTime());
             if (dayEntries == null) {
                 // no entries for the current day found, create empty list
-                dayEntries = new ArrayList(3);
+                dayEntries = new ArrayList<CmsCalendarEntry>(3);
             }
             // check if a real entry was found
             if (entry.getEntryData().getWeekdayStatus() <= I_CmsCalendarEntryData.WEEKDAYSTATUS_WORKDAY) {
