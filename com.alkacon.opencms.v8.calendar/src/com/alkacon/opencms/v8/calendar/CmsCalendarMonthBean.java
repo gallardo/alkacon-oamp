@@ -385,14 +385,16 @@ public class CmsCalendarMonthBean extends CmsCalendarDisplay {
      * Sets the view URI and the default view period.<p>
      * 
      * @see com.alkacon.opencms.v8.calendar.CmsCalendarDisplay#init(org.opencms.jsp.CmsJspActionElement)
+     * @return this instance, for expressiveness (chain methods calling)
      */
     @Override
-    public void init(CmsJspActionElement jsp) {
+    public CmsCalendarMonthBean init(CmsJspActionElement jsp) {
 
         // call super initialisation
         super.init(jsp);
         setViewPeriod(CmsCalendarDisplay.PERIOD_DAY);
         setViewUri(jsp.property(CmsCalendarDisplay.PROPERTY_CALENDAR_URI, "search", ""));
+        return this;
     }
 
     /**

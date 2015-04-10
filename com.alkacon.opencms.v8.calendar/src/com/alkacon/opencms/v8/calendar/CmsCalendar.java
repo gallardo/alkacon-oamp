@@ -74,10 +74,12 @@ public class CmsCalendar {
      * Adds a calendar entry to the list of entries for the day.<p>
      * 
      * @param entry the calendar entry to add
+     * @return this instance, for expressiveness (so that method calls can be chained)
      */
-    public void addEntry(CmsCalendarEntry entry) {
+    public CmsCalendar addEntry(CmsCalendarEntry entry) {
 
         m_entries.add(entry);
+        return this;
     }
 
     /**
@@ -121,10 +123,12 @@ public class CmsCalendar {
      * The list has to be created using {@link CmsCalendarEntry} objects.<p>
      * 
      * @param entries the list of entries for the calendar day
+     * @return this instance, for expressiveness (so that method calls can be chained)
      */
-    public void setEntries(List<CmsCalendarEntry> entries) {
+    public CmsCalendar setEntries(List<CmsCalendarEntry> entries) {
 
         m_entries = entries;
+        return this;
     }
 
 }

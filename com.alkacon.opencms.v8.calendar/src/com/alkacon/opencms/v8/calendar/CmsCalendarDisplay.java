@@ -229,10 +229,12 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * Example: <code>01/01/2006=New year;2</code> is a valid holiday entry.<p>
      * 
      * @param bundleName the name of the resource bundle
+     * @return this instance, for expressiveness (so that method calls can be chained)
      */
-    public void addHolidays(String bundleName) {
+    public CmsCalendarDisplay addHolidays(String bundleName) {
 
         addHolidays(bundleName, getJsp().getRequestContext().getLocale());
+        return this;
     }
 
     /**
@@ -245,8 +247,9 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * 
      * @param bundleName the name of the resource bundle
      * @param calendarLocale the Locale for the calendar to build
+     * @return this instance, for expressiveness (so that method calls can be chained)
      */
-    public void addHolidays(String bundleName, Locale calendarLocale) {
+    public CmsCalendarDisplay addHolidays(String bundleName, Locale calendarLocale) {
 
         CmsMessages holidays = new CmsMessages(bundleName, calendarLocale);
         String datePattern = holidays.key("calendar.holidays.datepattern");
@@ -283,6 +286,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
                 // ignore this exception, simply skip the entry 
             }
         }
+        return this;
     }
 
     /**
@@ -543,7 +547,18 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @return the default collector that reads the calendar entries from the VFS
      */
     public I_CmsResourceCollector getDefaultCollector() {
-
+        // XXX: AG 2015-04-10: This smells very bad:
+        // - It tries to read the PROPERTY_CALENDAR_URI property from the file
+        //   "search" (I cannot imagine that it exists!!!) to configure the
+        //   path to the xml that configures the calendar collector
+        // - If the file "search" does not exist (very probable), it uses
+        //   the current request uri as path to the resource that should
+        //   configure the collector
+        // - BUT with container pages, the request uri points to the container
+        //   page and not to the calendar view that configures the collector.
+        //   Moreover, I cannot see how to get the uri of this view. What it
+        //   could work is using the content.filename, that DOES point to the
+        //   calendar view.
         String calFilePath = getJsp().property(
             CmsCalendarDisplay.PROPERTY_CALENDAR_URI,
             "search",
@@ -559,13 +574,16 @@ public class CmsCalendarDisplay extends CmsCalendar {
                 if (Boolean.valueOf(useConf)) {
                     // individual configuration should be used, configure collector accordingly
                     I_CmsResourceCollector collector = new CmsConfigurableCollector();
+                    
+                    // XXX: AG 2015-05-10 What does this "setDefaultCollectorParam" configure???
                     collector.setDefaultCollectorParam(calFilePath);
                     return collector;
                 }
             }
         } catch (CmsException e) {
             // ignore, the simple default configuration will be used
-            LOG.debug("No configured collector found. " + e.getMessage(),e);
+            LOG.debug(String.format("No configured collector found. (Using "
+                    + "calFilePath: %s; Exception: %s) ", calFilePath, e.getMessage()),e);
         }
 
         // simple default configuration with calendar entries and serial date entries
@@ -1010,8 +1028,9 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * Initializes the JSP action element and the calendar messages to use for the frontend.<p>
      * 
      * @param jsp the JSP action element to use
+     * @return this instance, for expressiveness (so that method calls can be chained)
      */
-    public void init(CmsJspActionElement jsp) {
+    public CmsCalendarDisplay init(CmsJspActionElement jsp) {
 
         // initialize style class
         m_style = new CmsCalendarStyle();
@@ -1041,36 +1060,38 @@ public class CmsCalendarDisplay extends CmsCalendar {
             m_weekdayMaybeHoliday = -1;
             setViewPeriod(PERIOD_DAY);
         }
-
+        return this;
     }
 
     /**
      * Initializes the calendar entries using the default resource collector.<p>
      * 
-     * @return the List of collected resources using the default resource collector
+     * @return this instance, for expressiveness (so that method calls can be chained)
      */
-    public List<CmsResource> initCalendarEntries() {
+    public CmsCalendarDisplay initCalendarEntries() {
 
-        return initCalendarEntries(getDefaultCollector());
+        initCalendarEntries(getDefaultCollector());
+        return this;
     }
 
     /**
      * Initializes the calendar entries using the specified resource collector.<p>
      * 
      * @param collector the collector to use for collecting the resources
-     * @return the List of collected resources using the specified resource collector
+     * @return this instance, for expressiveness (so that method calls can be chained)
      */
-    public List<CmsResource> initCalendarEntries(I_CmsResourceCollector collector) {
+    public CmsCalendarDisplay initCalendarEntries(I_CmsResourceCollector collector) {
 
-        List<CmsResource> result = null;
+        List<CmsResource> resources = null;
         try {
-            result = collector.getResults(getJsp().getCmsObject());
-            setEntries(createCalendarEntries(
-                result,
-                PROPERTY_CALENDAR_STARTDATE,
-                PROPERTY_CALENDAR_ENDDATE,
-                CmsPropertyDefinition.PROPERTY_TITLE,
-                CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+            resources = collector.getResults(getJsp().getCmsObject());
+            List<CmsCalendarEntry> calendarEntries = createCalendarEntries(
+                    resources,
+                    PROPERTY_CALENDAR_STARTDATE,
+                    PROPERTY_CALENDAR_ENDDATE,
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    CmsPropertyDefinition.PROPERTY_DESCRIPTION);
+            setEntries(calendarEntries);
         } catch (CmsException e) {
             // error collecting resources, an empty calendar is returned
             if (LOG.isErrorEnabled()) {
@@ -1079,7 +1100,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
                     getJsp().getRequestContext().getUri()),e);
             }
         }
-        return result;
+        return this;
     }
 
     /**
@@ -1096,50 +1117,60 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * Sets the JSP action element to use.<p>
      *
      * @param jsp the JSP action element to use
+     * @return this instance, for expressiveness (so that method calls can be chained)
      */
-    public void setJsp(CmsJspActionElement jsp) {
+    public CmsCalendarDisplay setJsp(CmsJspActionElement jsp) {
 
         m_jsp = jsp;
+        return this;
     }
 
     /**
      * Sets the calendar messages to use for the frontend.<p>
      *
      * @param messages the calendar messages to use for the frontend
+     * @return this instance, for expressiveness (so that method calls can be chained)
      */
-    public void setMessages(CmsMessages messages) {
+    public CmsCalendarDisplay setMessages(CmsMessages messages) {
 
         m_messages = messages;
+        return this;
     }
 
     /**
      * Sets the CSS style object that is used to format the calendar output.<p>
      * 
      * @param style the CSS style object that is used to format the calendar output
+     * @return this instance, for expressiveness (so that method calls can be chained)
      */
-    public void setStyle(CmsCalendarStyle style) {
+    public CmsCalendarDisplay setStyle(CmsCalendarStyle style) {
 
         m_style = style;
+        return this;
     }
 
     /**
      * Sets if AJAX links should be created for calendar pagination.<p>
      * 
      * @param useAjaxLinks true if AJAX links should be created for calendar pagination, otherwise false
+     * @return this instance, for expressiveness (so that method calls can be chained)
      */
-    public void setUseAjaxLinks(boolean useAjaxLinks) {
+    public CmsCalendarDisplay setUseAjaxLinks(boolean useAjaxLinks) {
 
         m_useAjaxLinks = useAjaxLinks;
+        return this;
     }
 
     /**
      * Sets the type of the view which is displayed when clicking on a day.<p>
      * 
      * @param viewPeriod the type of the view which is displayed when clicking on a day
+     * @return this instance, for expressiveness (so that method calls can be chained)
      */
-    public void setViewPeriod(int viewPeriod) {
+    public CmsCalendarDisplay setViewPeriod(int viewPeriod) {
 
         m_viewPeriod = viewPeriod;
+        return this;
     }
 
     /**
