@@ -59,7 +59,7 @@ CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response
                 <script type="text/javascript">
 
                 $(document).ready(function () {
-                    var calItemsJsp = '<%= cms.link("/system/modules/com.alkacon.opencms.v8.calendar/pages/modern_items.jsp") %>';
+                    var calItemsJsp = '<%= cms.link("/system/modules/com.alkacon.opencms.v8.calendar/pages/fullcalendar-events-json.jsp") %>';
 
                     function calendarCenterLoad() {
                         calendarCenterShow( <%= currDay %> , <%= currMonth %> , <%= currYear %> );
