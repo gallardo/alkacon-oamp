@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @since 6.0.1 
  */
-public class CmsCalendarEntryDate {
+public class CmsCalendarEntryDate implements Cloneable {
 
     /** Number of milliseconds per minute. */
     public static final long MILLIS_00_PER_MINUTE = 1000 * 60;
@@ -126,9 +126,17 @@ public class CmsCalendarEntryDate {
     }
 
     /**
-     * @see java.lang.Object#clone()
+     * Warning: This method currently breaks the {@link Object#clone() }
+     * contract as it uses this class constructor to create the copy instead of
+     * <tt>Object.clone()</tt>. <p>
+     * <strong>Children of this class overriding this method mustn't invoke
+     * <tt>super.clone()</tt>!!!</strong>
+     * 
+     * @return new instance of {@link CmsCalendarEntryDate} (shallow + deep
+     *          copy of this object!)
      */
-    public Object clone() {
+    @Override
+    public CmsCalendarEntryDate clone() {
 
         return new CmsCalendarEntryDate(m_startDate, m_endDate);
     }

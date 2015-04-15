@@ -226,7 +226,7 @@ public class CmsSerialDateContentBean extends CmsJspActionElement implements I_C
                 CmsCalendarEntryData entryDataClone = null;
                 if (changeEntry[1].equals(CmsSerialDateXmlContentHandler.SERIES_FLAG_CHANGED)) {
                     // this is an entry that should be changed
-                    entryDataClone = (CmsCalendarEntryData)entryData.clone();
+                    entryDataClone = entryData.clone();
                     String xPath = CmsSerialDateXmlContentHandler.NODE_CHANGE + "[" + (i + 1) + "]/";
                     if (content != null) {
                         if (content.hasValue(xPath + NODE_TITLE, locale)) {

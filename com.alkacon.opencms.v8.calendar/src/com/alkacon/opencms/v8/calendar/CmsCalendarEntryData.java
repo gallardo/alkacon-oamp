@@ -43,7 +43,7 @@ package com.alkacon.opencms.v8.calendar;
  * 
  * @since 6.0.1
  */
-public class CmsCalendarEntryData implements I_CmsCalendarEntryData {
+public class CmsCalendarEntryData implements I_CmsCalendarEntryData, Cloneable {
 
     /** The description of the entry. */
     private String m_description;
@@ -129,7 +129,18 @@ public class CmsCalendarEntryData implements I_CmsCalendarEntryData {
         m_showTime = showTime;
     }
 
-    public Object clone() {
+    /**
+     * Warning: This method currently breaks the {@link Object#clone() }
+     * contract as it uses this class constructor to create the copy instead of
+     * <tt>Object.clone()</tt>. <p>
+     * <strong>Children of this class overriding this method mustn't invoke
+     * <tt>super.clone()</tt>!!!</strong>
+     * 
+     * @return new instance of {@link CmsCalendarEntryData} (shallow copy of
+     *          this object)
+     */
+    @Override
+    public CmsCalendarEntryData clone() {
 
         return new CmsCalendarEntryData(m_title, m_description, m_type, m_detailUri, m_weekdayStatus, m_showTime);
     }

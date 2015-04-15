@@ -192,7 +192,7 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
                     // check if current entry is in view range
                     if ((entryStart >= viewStart) && (entryStart <= viewEnd)) {
                         // the entry is in the view time range, clone the entry 
-                        CmsCalendarEntry cloneEntry = (CmsCalendarEntry)entry.clone();
+                        CmsCalendarEntry cloneEntry = entry.clone();
                         cloneEntry.getEntryDate().setStartDay(runDate.getTimeInMillis());
                         cloneEntry = checkChanges(cloneEntry);
                         if (cloneEntry != null) {

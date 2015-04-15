@@ -87,9 +87,17 @@ public class CmsCalendarEntryDateSerial extends CmsCalendarEntryDate {
     }
 
     /**
-     * @see java.lang.Object#clone()
+     * Warning: This method currently breaks the {@link Object#clone() }
+     * contract as it uses this class constructor to create the copy instead of
+     * <tt>Object.clone()</tt>. <p>
+     * <strong>Children of this class overriding this method mustn't invoke
+     * <tt>super.clone()</tt>!!!</strong>
+     * 
+     * @return new instance of {@link CmsCalendarEntryDateSerial} (shallow
+     *          + deep copy of this object!)
      */
-    public Object clone() {
+    @Override
+    public CmsCalendarEntryDateSerial clone() {
 
         CmsCalendarEntryDateSerial clone = new CmsCalendarEntryDateSerial(getStartDate(), getEndDate());
         clone.setSerialEndType(m_serialEndType);
