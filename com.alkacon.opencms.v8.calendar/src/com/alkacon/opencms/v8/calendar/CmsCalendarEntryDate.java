@@ -164,7 +164,7 @@ public class CmsCalendarEntryDate implements Cloneable {
     /**
      * Returns the end time of the entry.<p>
      *
-     * @return the end time of the entry
+     * @return in milliseconds from beginning of the day
      */
     public long getEndTime() {
 
@@ -195,7 +195,7 @@ public class CmsCalendarEntryDate implements Cloneable {
     /**
      * Returns the start time of the entry.<p>
      *
-     * @return the start time of the entry
+     * @return in milliseconds from beginning of the day
      */
     public long getStartTime() {
 
@@ -227,10 +227,9 @@ public class CmsCalendarEntryDate implements Cloneable {
         Comparator<CmsCalendarEntryDate> comparator =
                 calendarView.getComparator();
 
-        for (int i = 0; i < calendarView.getDates().size(); i++) {
-            CmsCalendarEntryDate viewDate = calendarView.getDates().get(i);
-
+        for (CmsCalendarEntryDate viewDate : calendarView.getDates()) {
             // check if the entry date matches the view date, if so, add it to the list
+            // XXX: But this could add 'entry' many times!!!
             if (comparator.compare(viewDate, this) == 0) {
                 result.add(entry);
             }
