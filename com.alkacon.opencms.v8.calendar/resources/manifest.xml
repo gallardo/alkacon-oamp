@@ -754,7 +754,7 @@
       <properties>
         <property>
           <name>Title</name>
-          <value><![CDATA[modern_items]]></value>
+          <value><![CDATA[fullcalendar-events-json]]></value>
         </property>
         <property type="shared">
           <name>export</name>
@@ -778,11 +778,11 @@
       <properties>
         <property>
           <name>Title</name>
-          <value><![CDATA[Calendar modern overview]]></value>
+          <value><![CDATA[Calendar modern overview (FullCalendar.io)]]></value>
         </property>
         <property>
           <name>cache</name>
-          <value><![CDATA[site;params=(calYear, calMonth, calDay, uri, notemplate)]]></value>
+          <value><![CDATA[site;params=(calYear, calMonth, calDay, calendarViewResource, notemplate)]]></value>
         </property>
         <property type="shared">
           <name>export</name>
