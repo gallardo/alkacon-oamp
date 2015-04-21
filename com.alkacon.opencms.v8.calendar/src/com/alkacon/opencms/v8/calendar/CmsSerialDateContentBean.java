@@ -161,7 +161,12 @@ public class CmsSerialDateContentBean extends CmsJspActionElement implements I_C
     }
 
     /**
-     * Returns the serial entry for the calendar generation of the passed resource.<p>
+     * Returns the serial entry for the calendar generation of the passed resource. <p>
+     * Note.- Contrary to the super class contract, this method does not require
+     * to invoke {@link #init(javax.servlet.jsp.PageContext, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse) init }.
+     * <p>
+     * If possible, prefer the static version of this method:
+     * {@link #getSerialEntryFrom(org.opencms.file.CmsObject, org.opencms.file.CmsResource) }
      * 
      * @param cms the current users context
      * @param resource the resource to generate the serial entry from
@@ -169,6 +174,21 @@ public class CmsSerialDateContentBean extends CmsJspActionElement implements I_C
      */
     @Override
     public CmsCalendarEntry getSerialEntryForCalendar(CmsObject cms, CmsResource resource) {
+        return getSerialEntryFrom(cms,resource);
+    }
+    
+    /**
+     * Returns the serial entry for the calendar generation of the passed resource.<p>
+     * 
+     * @param cms the current users context
+     * @param resource the OpenCms serial-entry resource to generate the serial entry from
+     * @return the serial entry
+     * @XXX This method signature is very unfortunate, as {@link CmsCalendarEntry} doesn't
+     * provide access to the specialized <tt>CmsCalendarEntryDateSerial</tt> without casting (!)
+     * Ideally, this should return an instance of a new <tt>CmsCalendarSerialEntry</tt>
+     * class that does provide accessor to the <tt>CmsCalendarEntryDateSerial</tt>
+     */
+    public static CmsCalendarEntry getSerialEntryFrom(CmsObject cms, CmsResource resource) {
 
         // first create the entry data
         CmsCalendarEntryData entryData = new CmsCalendarEntryData();

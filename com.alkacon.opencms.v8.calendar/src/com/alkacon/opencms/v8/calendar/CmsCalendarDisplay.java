@@ -164,7 +164,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
 
     /** The week day that should be marked as maybe holiday day. */
     private int m_weekdayMaybeHoliday;
-
+    
     /**
      * Empty constructor.<p>
      * 
@@ -537,8 +537,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
     }
 
     /**
-     * Returns the default collector that reads the calendar entries from the VFS.<p>
-     * 
+     * Returns the default collector that reads the calendar entries from the VFS. <p>
      * This basic implementation checks the calendar view file for configuration settings.
      * 
      * As fallback, it recursively collects entries and serial entries from the root folder.
@@ -595,7 +594,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
         return new CmsConfigurableCollector(defaultConfiguration);
     }
 
-    /** 
+    /**
      * Returns the calendar entries of the collected resources that match the actual
      * time period.<p>
      * 
@@ -1064,9 +1063,14 @@ public class CmsCalendarDisplay extends CmsCalendar {
     }
 
     /**
-     * Initializes the calendar entries using the default resource collector.<p>
+     * Initializes the calendar entries using the default resource collector. <p>
+     * You probably want to configure the path to the calendar view
+     * ({@link #setCalendarViewFilePath(java.lang.String)}) before invoking
+     * this method. If the path has not been configured, the configuration will
+     * be read from the default {@link #getCalendarViewFilePath()}.
      * 
      * @return this instance, for expressiveness (so that method calls can be chained)
+     * @see #setCalendarViewFilePath(java.lang.String)
      */
     public CmsCalendarDisplay initCalendarEntries() {
 
@@ -1082,9 +1086,9 @@ public class CmsCalendarDisplay extends CmsCalendar {
      */
     public CmsCalendarDisplay initCalendarEntries(I_CmsResourceCollector collector) {
 
-        List<CmsResource> resources = null;
         try {
-            resources = collector.getResults(getJsp().getCmsObject());
+            List<CmsResource> resources
+                    = collector.getResults(getJsp().getCmsObject());
             List<CmsCalendarEntry> calendarEntries = createCalendarEntries(
                     resources,
                     PROPERTY_CALENDAR_STARTDATE,
@@ -1174,16 +1178,27 @@ public class CmsCalendarDisplay extends CmsCalendar {
     }
 
     /**
-     * Creates calendar entries from the given list of resources and their properties.<p>
+     * Creates calendar entries from the given list of resources and their properties. <p>
      * 
-     * The following properties are read to create calendar entries from the resources:
-     * <ul>
-     * <li>the start date (mandatory)</li>
-     * <li>the end date (optional)</li>
-     * <li>the entry title (mandatory)</li>
-     * <li>the entry description (optional)</li>
-     * </ul>
-     * The mandatory properties must have been set to create correct calendar entries.<p>
+     * The following properties are read to create calendar entries from the
+     * resources:
+     * <dl>
+     * <dt>the start date (mandatory)</dt>
+     * <dd>The start date of the entry is stored in this value, as long value
+     * for common entries and key/value pairs for serial entries.</dd>
+     * <dt>the end date (optional)</dt>
+     * <dd>The optional end date of an entry that is used for generating the
+     * overviews as long value. For serial date entries, this property can also
+     * be used to store the class name of a class implementing the
+     * {@link I_CmsCalendarSerialDateContent} interface. In this case, this
+     * class will be used to create the <tt>CmsCalendarEntry<tt>s from the
+     * resources.</dd>
+     * <dt>the entry title (mandatory)</dt>
+     * <dt>the entry description (optional)</dt>
+     * <dd>teaser text for calendar entries that is shown in the overviews.</dd>
+     * </dl>
+     * The mandatory properties must have been set to create correct calendar
+     * entries.<p>
      * 
      * @param resources the resources to create calendar entries from
      * @param pStartDate the name of the property to use for the start date
@@ -1202,7 +1217,6 @@ public class CmsCalendarDisplay extends CmsCalendar {
         CmsObject cms = getJsp().getCmsObject();
         List<CmsCalendarEntry> result = new ArrayList<CmsCalendarEntry>(resources.size());
         // instanciate default serial date content class
-        I_CmsCalendarSerialDateContent defaultContent = new CmsSerialDateContentBean();
         for (int i = resources.size() - 1; i > -1; i--) {
             // loop the resources
             CmsResource res = resources.get(i);
@@ -1254,13 +1268,13 @@ public class CmsCalendarDisplay extends CmsCalendar {
                     String clazzName = getPropertyValue(cms, res, pEndDate, null);
                     if (CmsStringUtil.isEmpty(clazzName)) {
                         // did not find a class name in the property, use default content bean to get entry
-                        entry = defaultContent.getSerialEntryForCalendar(cms, res);
+                        entry = CmsSerialDateContentBean.getSerialEntryFrom(cms, res);
                     } else {
                         // found a class name, use it to get the entry 
                         try {
-                            I_CmsCalendarSerialDateContent serialContent = (I_CmsCalendarSerialDateContent)Class.forName(
+                            I_CmsCalendarSerialDateContent serialEntryReader = (I_CmsCalendarSerialDateContent)Class.forName(
                                 clazzName).newInstance();
-                            entry = serialContent.getSerialEntryForCalendar(cms, res);
+                            entry = serialEntryReader.getSerialEntryForCalendar(cms, res);
                         } catch (Exception e) {
                             // implementing class was not found
                             if (LOG.isErrorEnabled()) {
