@@ -96,6 +96,9 @@ public class CmsCalendarDisplay extends CmsCalendar {
     /** Request parameter name for the uri. */
     public static final String PARAM_URI = "uri";
 
+    /** Request parameter name for the calendar view resource. */
+    public static final String PARAM_CALENDARVIEWRESOURCE = "calendarViewResource";
+
     /** Request parameter name for the view type. */
     public static final String PARAM_VIEWTYPE = "calView";
 
@@ -165,6 +168,18 @@ public class CmsCalendarDisplay extends CmsCalendar {
     /** The week day that should be marked as maybe holiday day. */
     private int m_weekdayMaybeHoliday;
     
+    /** Path to the calendar view resource that configures the calendar */
+    private String m_calendarViewFilePath;
+
+    /**
+     * @param calendarViewFilePath path to the calendar view resource that configures the calendar
+     * @return this instance, for expressiveness (so that method calls can be chained)
+     */
+    public CmsCalendarDisplay setCalendarViewFilePath(String calendarViewFilePath) {
+        this.m_calendarViewFilePath = calendarViewFilePath;
+        return this;
+    }
+
     /**
      * Empty constructor.<p>
      * 
@@ -545,26 +560,11 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * 
      * @return the default collector that reads the calendar entries from the VFS
      */
-    public I_CmsResourceCollector getDefaultCollector() {
-        // XXX: AG 2015-04-10: This smells very bad:
-        // - It tries to read the PROPERTY_CALENDAR_URI property from the file
-        //   "search" (I cannot imagine that it exists!!!) to configure the
-        //   path to the xml that configures the calendar collector
-        // - If the file "search" does not exist (very probable), it uses
-        //   the current request uri as path to the resource that should
-        //   configure the collector
-        // - BUT with container pages, the request uri points to the container
-        //   page and not to the calendar view that configures the collector.
-        //   Moreover, I cannot see how to get the uri of this view. What it
-        //   could work is using the content.filename, that DOES point to the
-        //   calendar view.
-        String calFilePath = getJsp().property(
-            CmsCalendarDisplay.PROPERTY_CALENDAR_URI,
-            "search",
-            getJsp().getRequestContext().getUri());
+    private I_CmsResourceCollector getDefaultCollector() {
+        m_calendarViewFilePath = getCalendarViewFilePath();
         try {
             // read the calendar view file to determine if special collector configuration should be used
-            CmsFile calFile = getJsp().getCmsObject().readFile(calFilePath);
+            CmsFile calFile = getJsp().getCmsObject().readFile(m_calendarViewFilePath);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(getJsp().getCmsObject(), calFile);
             Locale locale = getJsp().getRequestContext().getLocale();
             if (content.hasValue(NODE_USECONFIG, locale)) {
@@ -575,14 +575,14 @@ public class CmsCalendarDisplay extends CmsCalendar {
                     I_CmsResourceCollector collector = new CmsConfigurableCollector();
                     
                     // XXX: AG 2015-05-10 What does this "setDefaultCollectorParam" configure???
-                    collector.setDefaultCollectorParam(calFilePath);
+                    collector.setDefaultCollectorParam(m_calendarViewFilePath);
                     return collector;
                 }
             }
         } catch (CmsException e) {
             // ignore, the simple default configuration will be used
             LOG.debug(String.format("No configured collector found. (Using "
-                    + "calFilePath: %s; Exception: %s) ", calFilePath, e.getMessage()),e);
+                    + "calFilePath: %s; Exception: %s) ", m_calendarViewFilePath, e.getMessage()),e);
         }
 
         // simple default configuration with calendar entries and serial date entries
@@ -595,6 +595,22 @@ public class CmsCalendarDisplay extends CmsCalendar {
     }
 
     /**
+     * @return the path if already configured with {@link #setCalendarViewFilePath(java.lang.String)};
+     *      if not, tries recursively to find a uri property to a config file
+     *      in the vfs
+     */
+    public String getCalendarViewFilePath() {
+        // "search" means that opencms will look for the property in parent file
+        // and parent folders
+        return (null != m_calendarViewFilePath)
+                ? m_calendarViewFilePath
+                : getJsp().property(
+                        CmsCalendarDisplay.PROPERTY_CALENDAR_URI,
+                        "search",
+                        getJsp().getRequestContext().getUri());
+    }
+
+    /** 
      * Returns the calendar entries of the collected resources that match the actual
      * time period.<p>
      * 
@@ -1222,7 +1238,9 @@ public class CmsCalendarDisplay extends CmsCalendar {
             CmsResource res = resources.get(i);
             // read the title of the resource
             String title = getPropertyValue(cms, res, pTitle, null);
-            // read the start date property
+            // read the start date property.
+            // AlkaconV8CalendarSerialDates entries save the serial data in
+            //  the "Serialdate"(=pStartDate) element
             String startDate = getPropertyValue(cms, res, pStartDate, null);
             if (CmsStringUtil.isNotEmpty(title) && CmsStringUtil.isNotEmpty(startDate)) {
                 // required properties were found, resource can be used as an entry
@@ -1239,7 +1257,8 @@ public class CmsCalendarDisplay extends CmsCalendar {
                     type = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
                 } catch (CmsException e) {
                     // ignore, this information is not important
-                    LOG.warn(e.getLocalizedMessage(), e);
+                    LOG.warn("Could not retrieve entry type of calendar resource: "
+                            + e.getLocalizedMessage(), e);
                 }
 
                 // create the calendar entry data
