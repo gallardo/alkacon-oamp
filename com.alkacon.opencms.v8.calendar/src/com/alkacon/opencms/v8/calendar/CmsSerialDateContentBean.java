@@ -183,10 +183,14 @@ public class CmsSerialDateContentBean extends CmsJspActionElement implements I_C
      * @param cms the current users context
      * @param resource the OpenCms serial-entry resource to generate the serial entry from
      * @return the serial entry
+     * 
      * @XXX This method signature is very unfortunate, as {@link CmsCalendarEntry} doesn't
      * provide access to the specialized <tt>CmsCalendarEntryDateSerial</tt> without casting (!)
-     * Ideally, this should return an instance of a new <tt>CmsCalendarSerialEntry</tt>
-     * class that does provide accessor to the <tt>CmsCalendarEntryDateSerial</tt>
+     * Ideally, this should return an instance of a new <tt>CmsCalendarEntrySerial</tt>
+     * class that does provide an accessor to the <tt>CmsCalendarEntryDateSerial</tt>.
+     * Trying to refactor the code is very expensive, as there are many dependencies
+     * on this method signature, and even a very evil cyclic dependency
+     * <tt>CmsCalendarEntry-CmsCalendarEntryDate</tt> that doesn't make it easier.
      */
     public static CmsCalendarEntry getSerialEntryFrom(CmsObject cms, CmsResource resource) {
 
