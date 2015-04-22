@@ -552,15 +552,18 @@ public class CmsCalendarDisplay extends CmsCalendar {
     }
 
     /**
-     * Returns the default collector that reads the calendar entries from the VFS. <p>
-     * This basic implementation checks the calendar view file for configuration settings.
-     * 
-     * As fallback, it recursively collects entries and serial entries from the root folder.
-     * Overwrite this to change the logic of the default collection.<p>
-     * 
-     * @return the default collector that reads the calendar entries from the VFS
+     * Returns the collector that reads the calendar entries from the VFS.
+     * <p>
+     * This basic implementation checks the calendar view file for configuration
+     * settings.
+     * <p>
+     * As fallback, it recursively collects entries and serial entries from the
+     * root folder. Override this method to change the logic of the default
+     * collection.<p>
+     * <p>
+     * @return the collector that reads the calendar entries from the VFS
      */
-    private I_CmsResourceCollector getDefaultCollector() {
+    protected I_CmsResourceCollector getDefaultCollector() {
         m_calendarViewFilePath = getCalendarViewFilePath();
         try {
             // read the calendar view file to determine if special collector configuration should be used
@@ -572,17 +575,20 @@ public class CmsCalendarDisplay extends CmsCalendar {
                 String useConf = content.getStringValue(getJsp().getCmsObject(), NODE_USECONFIG, locale);
                 if (Boolean.valueOf(useConf)) {
                     // individual configuration should be used, configure collector accordingly
-                    I_CmsResourceCollector collector = new CmsConfigurableCollector();
+                    CmsConfigurableCollector collector = new CmsConfigurableCollector();
                     
-                    // XXX: AG 2015-05-10 What does this "setDefaultCollectorParam" configure???
+                    // The "setDefaultCollectorParam" defines the path to the
+                    // resource defining the collector configuration
                     collector.setDefaultCollectorParam(m_calendarViewFilePath);
                     return collector;
                 }
             }
         } catch (CmsException e) {
             // ignore, the simple default configuration will be used
-            LOG.debug(String.format("No configured collector found. (Using "
-                    + "calFilePath: %s; Exception: %s) ", m_calendarViewFilePath, e.getMessage()),e);
+            LOG.debug(String.format("No collector configured in '%s'."
+                    + " We'll use a default collector that collects all entries"
+                    + " and serial entries found recursively under the VFS root"
+                    + " folder. Exception: %s) ", m_calendarViewFilePath, e.getMessage()),e);
         }
 
         // simple default configuration with calendar entries and serial date entries
@@ -1207,7 +1213,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * overviews as long value. For serial date entries, this property can also
      * be used to store the class name of a class implementing the
      * {@link I_CmsCalendarSerialDateContent} interface. In this case, this
-     * class will be used to create the <tt>CmsCalendarEntry<tt>s from the
+     * class will be used to create the <tt>CmsCalendarEntry</tt>s from the
      * resources.</dd>
      * <dt>the entry title (mandatory)</dt>
      * <dt>the entry description (optional)</dt>
@@ -1240,7 +1246,8 @@ public class CmsCalendarDisplay extends CmsCalendar {
             String title = getPropertyValue(cms, res, pTitle, null);
             // read the start date property.
             // AlkaconV8CalendarSerialDates entries save the serial data in
-            //  the "Serialdate"(=pStartDate) element
+            //  the "Serialdate" element that is mapped to the property
+            // "calendar.startdate"
             String startDate = getPropertyValue(cms, res, pStartDate, null);
             if (CmsStringUtil.isNotEmpty(title) && CmsStringUtil.isNotEmpty(startDate)) {
                 // required properties were found, resource can be used as an entry
