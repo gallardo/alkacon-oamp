@@ -45,7 +45,7 @@
         <properties>
           <property>
             <name>template-elements</name>
-            <value type="shared"><![CDATA[/system/modules/com.alkacon.opencms.v8.calendar/pages/detail-entry.jsp]]></value>
+            <value type="shared"><![CDATA[/system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-entry.jsp]]></value>
           </property>
         </properties>
         <param name="schema">/system/modules/com.alkacon.opencms.v8.calendar/schemas/entry.xsd</param>
@@ -54,7 +54,7 @@
         <properties>
           <property>
             <name>template-elements</name>
-            <value type="shared"><![CDATA[/system/modules/com.alkacon.opencms.v8.calendar/pages/detail-serialentry.jsp]]></value>
+            <value type="shared"><![CDATA[/system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-serialentry.jsp]]></value>
           </property>
         </properties>
         <param name="schema">/system/modules/com.alkacon.opencms.v8.calendar/schemas/serialentry.xsd</param>
@@ -63,7 +63,7 @@
         <properties>
           <property>
             <name>template-elements</name>
-            <value type="shared"><![CDATA[/system/modules/com.alkacon.opencms.v8.calendar/pages/detail-calendar.jsp]]></value>
+            <value type="shared"><![CDATA[/system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-calendar.jsp]]></value>
           </property>
         </properties>
         <param name="schema">/system/modules/com.alkacon.opencms.v8.calendar/schemas/calendarview.xsd</param>
@@ -633,8 +633,8 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/com.alkacon.opencms.v8.calendar/pages/detail-calendar.jsp</source>
-      <destination>system/modules/com.alkacon.opencms.v8.calendar/pages/detail-calendar.jsp</destination>
+      <source>system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-calendar.jsp</source>
+      <destination>system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-calendar.jsp</destination>
       <type>jsp</type>
       <uuidstructure>e02ce8a7-20be-11e1-9585-27f2fbbdf126</uuidstructure>
       <uuidresource>e02ce8a8-20be-11e1-9585-27f2fbbdf126</uuidresource>
@@ -661,8 +661,8 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/com.alkacon.opencms.v8.calendar/pages/detail-entry.jsp</source>
-      <destination>system/modules/com.alkacon.opencms.v8.calendar/pages/detail-entry.jsp</destination>
+      <source>system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-entry.jsp</source>
+      <destination>system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-entry.jsp</destination>
       <type>jsp</type>
       <uuidstructure>e034149c-20be-11e1-9585-27f2fbbdf126</uuidstructure>
       <uuidresource>e034149d-20be-11e1-9585-27f2fbbdf126</uuidresource>
@@ -689,8 +689,8 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/com.alkacon.opencms.v8.calendar/pages/detail-serialentry.jsp</source>
-      <destination>system/modules/com.alkacon.opencms.v8.calendar/pages/detail-serialentry.jsp</destination>
+      <source>system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-serialentry.jsp</source>
+      <destination>system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-serialentry.jsp</destination>
       <type>jsp</type>
       <uuidstructure>e03685a1-20be-11e1-9585-27f2fbbdf126</uuidstructure>
       <uuidresource>e03685a2-20be-11e1-9585-27f2fbbdf126</uuidresource>
@@ -741,8 +741,8 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/com.alkacon.opencms.v8.calendar/pages/fullcalendar-events-json.jsp</source>
-      <destination>system/modules/com.alkacon.opencms.v8.calendar/pages/fullcalendar-events-json.jsp</destination>
+      <source>system/modules/com.alkacon.opencms.v8.calendar/elements/fullcalendar-event-list-json.jsp</source>
+      <destination>system/modules/com.alkacon.opencms.v8.calendar/elements/fullcalendar-event-list-json.jsp</destination>
       <type>jsp</type>
       <uuidstructure>100598cd-2183-11e1-80b6-27f2fbbdf126</uuidstructure>
       <uuidresource>100598ce-2183-11e1-80b6-27f2fbbdf126</uuidresource>
@@ -754,7 +754,7 @@
       <properties>
         <property>
           <name>Title</name>
-          <value><![CDATA[fullcalendar-events-json]]></value>
+          <value><![CDATA[fullcalendar-event-list-json]]></value>
         </property>
         <property type="shared">
           <name>export</name>
@@ -765,8 +765,8 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/com.alkacon.opencms.v8.calendar/formatters/fullcalendar-formatter.jsp</source>
-      <destination>system/modules/com.alkacon.opencms.v8.calendar/formatters/fullcalendar-formatter.jsp</destination>
+      <source>system/modules/com.alkacon.opencms.v8.calendar/formatters/fullcalendar.jsp</source>
+      <destination>system/modules/com.alkacon.opencms.v8.calendar/formatters/fullcalendar.jsp</destination>
       <type>jsp</type>
       <uuidstructure>0b44f215-217a-11e1-80b6-27f2fbbdf126</uuidstructure>
       <uuidresource>0b44f216-217a-11e1-80b6-27f2fbbdf126</uuidresource>
@@ -1078,6 +1078,14 @@
       <accesscontrol/>
     </file>
     <file>
+      <destination>system/modules/com.alkacon.opencms.v8.calendar/schemas/nested</destination>
+      <type>folder</type>
+      <flags>0</flags>
+      <properties/>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
       <source>system/modules/com.alkacon.opencms.v8.calendar/schemas/calendarview.xsd</source>
       <destination>system/modules/com.alkacon.opencms.v8.calendar/schemas/calendarview.xsd</destination>
       <type>plain</type>
@@ -1091,15 +1099,15 @@
       <properties>
         <property>
           <name>Title</name>
-          <value><![CDATA[XSD for calendar oveerview page]]></value>
+          <value><![CDATA[XSD for calendar overview page]]></value>
         </property>
       </properties>
       <relations/>
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/com.alkacon.opencms.v8.calendar/schemas/calendarviewresconf.xsd</source>
-      <destination>system/modules/com.alkacon.opencms.v8.calendar/schemas/calendarviewresconf.xsd</destination>
+      <source>system/modules/com.alkacon.opencms.v8.calendar/schemas/nested/calendarviewresconf.xsd</source>
+      <destination>system/modules/com.alkacon.opencms.v8.calendar/schemas/nested/calendarviewresconf.xsd</destination>
       <type>plain</type>
       <uuidstructure>e0472785-20be-11e1-9585-27f2fbbdf126</uuidstructure>
       <uuidresource>e0472786-20be-11e1-9585-27f2fbbdf126</uuidresource>
@@ -1138,8 +1146,8 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/com.alkacon.opencms.v8.calendar/schemas/entrylink.xsd</source>
-      <destination>system/modules/com.alkacon.opencms.v8.calendar/schemas/entrylink.xsd</destination>
+      <source>system/modules/com.alkacon.opencms.v8.calendar/schemas/nested/entrylink.xsd</source>
+      <destination>system/modules/com.alkacon.opencms.v8.calendar/schemas/nested/entrylink.xsd</destination>
       <type>plain</type>
       <uuidstructure>e04c098b-20be-11e1-9585-27f2fbbdf126</uuidstructure>
       <uuidresource>e04c098c-20be-11e1-9585-27f2fbbdf126</uuidresource>
@@ -1158,8 +1166,8 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/com.alkacon.opencms.v8.calendar/schemas/serialchange.xsd</source>
-      <destination>system/modules/com.alkacon.opencms.v8.calendar/schemas/serialchange.xsd</destination>
+      <source>system/modules/com.alkacon.opencms.v8.calendar/schemas/nested/serialchange.xsd</source>
+      <destination>system/modules/com.alkacon.opencms.v8.calendar/schemas/nested/serialchange.xsd</destination>
       <type>plain</type>
       <uuidstructure>e04e537e-20be-11e1-9585-27f2fbbdf126</uuidstructure>
       <uuidresource>e04e537f-20be-11e1-9585-27f2fbbdf126</uuidresource>
@@ -1198,8 +1206,8 @@
       <accesscontrol/>
     </file>
     <file>
-      <source>system/modules/com.alkacon.opencms.v8.calendar/schemas/serialinterruption.xsd</source>
-      <destination>system/modules/com.alkacon.opencms.v8.calendar/schemas/serialinterruption.xsd</destination>
+      <source>system/modules/com.alkacon.opencms.v8.calendar/schemas/nested/serialinterruption.xsd</source>
+      <destination>system/modules/com.alkacon.opencms.v8.calendar/schemas/nested/serialinterruption.xsd</destination>
       <type>plain</type>
       <uuidstructure>e0557f74-20be-11e1-9585-27f2fbbdf126</uuidstructure>
       <uuidresource>e0557f75-20be-11e1-9585-27f2fbbdf126</uuidresource>

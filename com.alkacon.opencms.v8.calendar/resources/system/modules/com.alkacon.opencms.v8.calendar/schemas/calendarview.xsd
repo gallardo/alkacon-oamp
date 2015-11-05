@@ -1,7 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-    <xsd:include schemaLocation="opencms://system/modules/com.alkacon.opencms.v8.calendar/schemas/calendarviewresconf.xsd"/>
+    <xsd:include schemaLocation="opencms://system/modules/com.alkacon.opencms.v8.calendar/schemas/nested/calendarviewresconf.xsd"/>
         
     <xsd:element name="AlkaconV8CalendarViews" type="OpenCmsAlkaconV8CalendarViews"/>
     
@@ -34,7 +34,7 @@
                 <mapping element="Title" mapto="property:Title" />
             </mappings>
             <formatters>
-                <formatter minwidth="400" uri="/system/modules/com.alkacon.opencms.v8.calendar/formatters/fullcalendar-formatter.jsp" searchcontent="true" />
+                <formatter minwidth="400" uri="/system/modules/com.alkacon.opencms.v8.calendar/formatters/fullcalendar.jsp" searchcontent="true" />
                 <formatter minwidth="150" maxwidth="250" uri="/system/modules/com.alkacon.opencms.v8.calendar/elements/calendar-side-month.jsp" searchcontent="true" />
             </formatters>
             <headincludes>

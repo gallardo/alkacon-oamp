@@ -28,7 +28,7 @@ String pEDay = request.getParameter("eDay");
 String pLocale = request.getParameter("__locale");
 String pCalendarViewObject = request.getParameter(CmsCalendarDisplay.PARAM_CALENDARVIEWRESOURCE);
 if (LOG.isDebugEnabled()) {
-    LOG.debug(String.format("Requested fullcalendar-events-json.jsp with parameters: \n"
+    LOG.debug(String.format("Requested fullcalendar-event-list-json.jsp with parameters: \n"
         + "sYear:%s, sMonth:%s, sDay:%s, eYear:%s, eMonth:%s, eDay:%s\n"
         + "__locale:%s, calendarViewObject:%s",
         pSYear, pSMonth, pSDay, pEYear, pEMonth, pEDay, pLocale, pCalendarViewObject));

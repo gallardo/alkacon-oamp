@@ -62,7 +62,7 @@
 
                 // Calendar documentation: http://fullcalendar.io/
                 $(document).ready(function () {
-                    var calItemsJsp = '<%= cms.link("/system/modules/com.alkacon.opencms.v8.calendar/pages/fullcalendar-events-json.jsp") %>';
+                    var calItemsJsp = '<%= cms.link("/system/modules/com.alkacon.opencms.v8.calendar/elements/fullcalendar-event-list-json.jsp") %>';
 
                     function calendarCenterLoad() {
                         calendarCenterShow( <%= currDay %> , <%= currMonth %> , <%= currYear %> );
