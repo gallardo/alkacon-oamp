@@ -689,6 +689,38 @@
       <accesscontrol/>
     </file>
     <file>
+        <source>system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-entry.xml</source>
+        <destination>system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-entry.xml</destination>
+        <type>formatter_config</type>
+        <uuidstructure>aee99bf6-849f-11e5-9301-0ef3fc544e0e</uuidstructure>
+        <uuidresource>aee99bf7-849f-11e5-9301-0ef3fc544e0e</uuidresource>
+        <datelastmodified>Fri, 06 Nov 2015 16:16:04 GMT</datelastmodified>
+        <userlastmodified>Admin</userlastmodified>
+        <datecreated>Fri, 06 Nov 2015 16:01:47 GMT</datecreated>
+        <usercreated>Admin</usercreated>
+        <flags>0</flags>
+        <properties>
+                <property>
+                        <name>Title</name>
+                        <value><![CDATA[v8 Calendar event]]></value>
+                </property>
+                <property>
+                        <name>locale</name>
+                        <value><![CDATA[en]]></value>
+                </property>
+                <property>
+                        <name>locale-available</name>
+                        <value><![CDATA[en]]></value>
+                </property>
+                <property>
+                        <name>search.exclude</name>
+                        <value><![CDATA[all]]></value>
+                </property>
+        </properties>
+        <relations/>
+        <accesscontrol/>
+    </file>
+    <file>
       <source>system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-serialentry.jsp</source>
       <destination>system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-serialentry.jsp</destination>
       <type>jsp</type>
@@ -715,6 +747,38 @@
       </properties>
       <relations/>
       <accesscontrol/>
+    </file>
+    <file>
+            <source>system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-serialentry.xml</source>
+            <destination>system/modules/com.alkacon.opencms.v8.calendar/formatters/detail-serialentry.xml</destination>
+            <type>formatter_config</type>
+            <uuidstructure>22e2c9ac-84a0-11e5-9301-0ef3fc544e0e</uuidstructure>
+            <uuidresource>22e2c9ad-84a0-11e5-9301-0ef3fc544e0e</uuidresource>
+            <datelastmodified>Fri, 06 Nov 2015 16:13:14 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Fri, 06 Nov 2015 16:05:01 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties>
+                    <property>
+                            <name>Title</name>
+                            <value><![CDATA[v8 Calendar serial event]]></value>
+                    </property>
+                    <property>
+                            <name>locale</name>
+                            <value><![CDATA[en]]></value>
+                    </property>
+                    <property>
+                            <name>locale-available</name>
+                            <value><![CDATA[en]]></value>
+                    </property>
+                    <property>
+                            <name>search.exclude</name>
+                            <value><![CDATA[all]]></value>
+                    </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
     </file>
     <file>
       <source>system/modules/com.alkacon.opencms.v8.calendar/pages/example.jsp</source>
@@ -792,6 +856,38 @@
       <relations/>
       <accesscontrol/>
     </file>
+    <file>
+            <source>system/modules/com.alkacon.opencms.v8.calendar/formatters/fullcalendar.xml</source>
+            <destination>system/modules/com.alkacon.opencms.v8.calendar/formatters/fullcalendar.xml</destination>
+            <type>formatter_config</type>
+            <uuidstructure>5038bbe0-849f-11e5-9301-0ef3fc544e0e</uuidstructure>
+            <uuidresource>5038bbe1-849f-11e5-9301-0ef3fc544e0e</uuidresource>
+            <datelastmodified>Fri, 06 Nov 2015 16:13:23 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Fri, 06 Nov 2015 15:59:08 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties>
+                    <property>
+                            <name>Title</name>
+                            <value><![CDATA[v8 Calendar]]></value>
+                    </property>
+                    <property>
+                            <name>locale</name>
+                            <value><![CDATA[en]]></value>
+                    </property>
+                    <property>
+                            <name>locale-available</name>
+                            <value><![CDATA[en]]></value>
+                    </property>
+                    <property>
+                            <name>search.exclude</name>
+                            <value><![CDATA[all]]></value>
+                    </property>
+            </properties>
+            <relations/>
+            <accesscontrol/>
+    </file>    
     <file>
       <source>system/modules/com.alkacon.opencms.v8.calendar/pages/test-calendar.jsp</source>
       <destination>system/modules/com.alkacon.opencms.v8.calendar/pages/test-calendar.jsp</destination>
