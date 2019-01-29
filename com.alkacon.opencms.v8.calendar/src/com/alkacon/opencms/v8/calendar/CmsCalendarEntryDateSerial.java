@@ -32,10 +32,9 @@
 
 package com.alkacon.opencms.v8.calendar;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Stores the serial date information of a single calendar entry.<p>
@@ -48,8 +47,8 @@ import java.util.Map;
  */
 public class CmsCalendarEntryDateSerial extends CmsCalendarEntryDate {
 
-    /** The occurences of a series interval. */
-    private int m_occurences;
+    /** The occurrences of a series interval. */
+    private int m_occurrences;
 
     /** The end date of a series. */
     private Calendar m_serialEndDate;
@@ -101,7 +100,7 @@ public class CmsCalendarEntryDateSerial extends CmsCalendarEntryDate {
 
         CmsCalendarEntryDateSerial clone = new CmsCalendarEntryDateSerial(getStartDate(), getEndDate());
         clone.setSerialEndType(m_serialEndType);
-        clone.setOccurences(m_occurences);
+        clone.setOccurrences(m_occurrences);
         clone.setSerialOptions(m_serialOptions);
         return clone;
     }
@@ -132,8 +131,8 @@ public class CmsCalendarEntryDateSerial extends CmsCalendarEntryDate {
         int endType = getSerialEndType();
         values.put(I_CmsCalendarSerialDateOptions.CONFIG_END_TYPE, String.valueOf(endType));
         if (endType == I_CmsCalendarSerialDateOptions.END_TYPE_TIMES) {
-            // end type: after a number of occurences
-            values.put(I_CmsCalendarSerialDateOptions.CONFIG_OCCURENCES, String.valueOf(getOccurences()));
+            // end type: after a number of occurrences
+            values.put(I_CmsCalendarSerialDateOptions.CONFIG_OCCURRENCES, String.valueOf(getOccurrences()));
         } else if (endType == I_CmsCalendarSerialDateOptions.END_TYPE_DATE) {
             // end type: ends at a specified date
             values.put(
@@ -148,13 +147,13 @@ public class CmsCalendarEntryDateSerial extends CmsCalendarEntryDate {
     }
 
     /**
-     * Returns the occurences of a defined series interval, used for the series end type.<p>
+     * Returns the occurrences of a defined series interval, used for the series end type.<p>
      *
-     * @return the occurences of a defined series interval, used for the series end type
+     * @return the occurrences of a defined series interval, used for the series end type
      */
-    public int getOccurences() {
+    public int getOccurrences() {
 
-        return m_occurences;
+        return m_occurrences;
     }
 
     /**
@@ -203,13 +202,13 @@ public class CmsCalendarEntryDateSerial extends CmsCalendarEntryDate {
      * Initializes the serial date options with the given values.<p>
      * 
      * @param endType the end type of the serial date
-     * @param occurences the number of occurences for the serial type that defines n occurences of the series
+     * @param occurrences the number of occurrences for the serial type that defines n occurrences of the series
      * @param options the serial date options
      */
-    public void initSerialDate(int endType, int occurences, I_CmsCalendarSerialDateOptions options) {
+    public void initSerialDate(int endType, int occurrences, I_CmsCalendarSerialDateOptions options) {
 
         m_serialEndType = endType;
-        m_occurences = occurences;
+        m_occurrences = occurrences;
         m_serialOptions = options;
     }
 
@@ -254,14 +253,251 @@ public class CmsCalendarEntryDateSerial extends CmsCalendarEntryDate {
         }
     }
 
-    /**
-     * Sets the occurences of a defined series interval, used for the series end type.<p>
-     *
-     * @param occurences the occurences of a defined series interval, used for the series end type
-     */
-    public void setOccurences(int occurences) {
+    public String getFormattedEntryDetails() {
+        String result = getFormattedEventDuration() + "\n" + getFormattedEventType() + "\n" + getFormattedDateBoundaries();
+        if (result.equals(""))
+            result = "No data found.";
+        return result;
+    }
 
-        m_occurences = occurences;
+    /**
+     * Converts the duration of the event into a legible String that shows the start and end times for every repetition.
+     *
+     * @return the formatted version of the corresponding times.
+     */
+    private String getFormattedEventDuration() {
+        Calendar startDate = getStartDate();
+        Calendar endDate = getEndDate();
+        String pattern = "'From' HH:mm ";
+        StringBuilder result = new StringBuilder();
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+
+        result.append(format.format(startDate.getTime()));
+
+        pattern = "'to' HH:mm ";
+        if (!checkSameDate(startDate, endDate)) {
+            long diff = endDate.getTimeInMillis() - startDate.getTimeInMillis();
+            diff = TimeUnit.MILLISECONDS.toDays(diff);
+
+            pattern += "+" + diff + " ";
+        }
+        pattern += "zzz";
+        format.applyPattern(pattern);
+        result.append(format.format(endDate.getTime()));
+
+        return result.toString();
+    }
+
+    /**
+     * Converts the event type into a legible String that shows how often the event will be repeated throughout the series.
+     *
+     * @return the formatted version of the event type.
+     */
+    private String getFormattedEventType() {
+        StringBuilder result = new StringBuilder();
+        Map<String, String> options = getConfigurationValuesAsMap();
+        int type = Integer.parseInt(options.get("type"));
+        int offset = 0;
+        if (options.containsKey("interval")) {
+            if (options.get("interval").equals("2")) {
+                result.append("Every two s");
+                offset = result.length() - 1;
+            } else {
+                result.append("ly");
+            }
+        }
+        switch (type) {
+            case 1:
+                result = offset == 0 ? result.insert(offset, "Dai") : result.insert(offset, "day");
+                break;
+            case 2:
+                result.insert(offset, "week").append(" on ");
+                String [] eventDaysArray = options.get("weekdays").split(",");
+                Iterator<String> eventDays = Arrays.asList(eventDaysArray).iterator();
+                while (eventDays.hasNext()) {
+                    String day = eventDays.next();
+                    switch (day) {
+                        case "1":
+                            result.append("Sundays");
+                            break;
+                        case "2":
+                            result.append("Mondays");
+                            break;
+                        case "3":
+                            result.append("Tuesdays");
+                            break;
+                        case "4":
+                            result.append("Wednesdays");
+                            break;
+                        case "5":
+                            result.append("Thursdays");
+                            break;
+                        case "6":
+                            result.append("Fridays");
+                            break;
+                        case "7":
+                            result.append("Saturdays");
+                            break;
+                    }
+                    if (eventDays.hasNext()) {
+                        result.append(", ");
+                    }
+                }
+                break;
+            case 3:
+                result.insert(offset, "month").append(" on ");
+                String dayOfMonth = options.get("dayofmonth");
+                dayOfMonth = formatDayOfMonth(dayOfMonth);
+                result.append("the ");
+                result.append(dayOfMonth);
+                if (options.containsKey("weekdays")) {
+                    String day = options.get("weekdays");
+                    switch (day) {
+                        case "1":
+                            result.append(" Sunday");
+                            break;
+                        case "2":
+                            result.append(" Monday");
+                            break;
+                        case "3":
+                            result.append(" Tuesday");
+                            break;
+                        case "4":
+                            result.append(" Wednesday");
+                            break;
+                        case "5":
+                            result.append(" Thursday");
+                            break;
+                        case "6":
+                            result.append(" Friday");
+                            break;
+                        case "7":
+                            result.append(" Saturday");
+                            break;
+                    }
+                }
+                break;
+            case 4:
+                result.append("Yearly on ");
+                String month = options.get("month");
+                switch (month) {
+                    case "0":
+                        result.append("January ");
+                        break;
+                    case "1":
+                        result.append("February ");
+                        break;
+                    case "2":
+                        result.append("March ");
+                        break;
+                    case "3":
+                        result.append("April ");
+                        break;
+                    case "4":
+                        result.append("May ");
+                        break;
+                    case "5":
+                        result.append("June ");
+                        break;
+                    case "6":
+                        result.append("July");
+                        break;
+                    case "7":
+                        result.append("August ");
+                        break;
+                    case "8":
+                        result.append("September ");
+                        break;
+                    case "9":
+                        result.append("October ");
+                        break;
+                    case "10":
+                        result.append("November ");
+                        break;
+                    case "11":
+                        result.append("December ");
+                        break;
+                }
+                dayOfMonth = options.get("dayofmonth");
+                dayOfMonth = formatDayOfMonth(dayOfMonth);
+                result.append("the ").append(dayOfMonth);
+                break;
+        }
+        result.replace(0, 1, result.substring(0, 1).toUpperCase());
+        return result.toString();
+    }
+
+    /**
+     * Converts the start and end dates of the repeating event into a legible String that shows the first and final date
+     * on which the event will be repeated.
+     *
+     * @return the formatted version of the time boundaries of the repetition.
+     */
+    private String getFormattedDateBoundaries() {
+        StringBuffer result = new StringBuffer();
+        Map<String, String> options = getConfigurationValuesAsMap();
+        String pattern = "dd.MM.yyyy";
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+
+        result.append("From ").append(formatter.format(getStartDate().getTime()));
+        switch (options.get("endtype")) {
+            case "2":
+                result.append(" until after ").append(options.get("occurrences")).append(" events.");
+                break;
+            case "3":
+                result.append(" until ").append(formatter.format(getSerialEndDate().getTime()));
+                break;
+            default:
+                result.append(" indefinitely.");
+        }
+
+        return result.toString();
+    }
+
+    /**
+     * Adds the proper suffix to numerals.
+     *
+     * @param dayOfMonth a day in the form of an integer
+     * @return the day with the suffix appended
+     */
+    private String formatDayOfMonth(String dayOfMonth) {
+        switch (dayOfMonth) {
+            case "1":
+                dayOfMonth += "st";
+                break;
+            case "2":
+                dayOfMonth += "nd";
+                break;
+            case "3":
+                dayOfMonth += "rd";
+                break;
+            default:
+                dayOfMonth += "th";
+                break;
+        }
+        return dayOfMonth;
+    }
+
+    /**
+     * Checks if two Date objects take place at the same date.
+     *
+     * @param firstDate first date chronologically
+     * @param secondDate second date chronologically
+     * @return true if both times take place at the same date, false otherwise
+     */
+    private boolean checkSameDate(Calendar firstDate, Calendar secondDate) {
+        return (firstDate.get(Calendar.DAY_OF_YEAR) == secondDate.get(Calendar.DAY_OF_YEAR)) &&
+                (firstDate.get(Calendar.YEAR) == secondDate.get(Calendar.YEAR));
+    }
+
+    /**
+     * Sets the occurrences of a defined series interval, used for the series end type.<p>
+     *
+     * @param occurrences the occurrences of a defined series interval, used for the series end type
+     */
+    public void setOccurrences(int occurrences) {
+
+        m_occurrences = occurrences;
     }
 
     /**

@@ -10,6 +10,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="org.apache.commons.logging.Log" %>
 <%@ page import="org.opencms.main.CmsLog" %>
+<%@ page import="com.alkacon.opencms.v8.calendar.CmsCalendarEntryDateSerial" %>
 
 <%
     Log LOG = CmsLog.getLog(this.getClass());
@@ -20,7 +21,7 @@
     CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
     CmsObject cmsObject = jsp.getCmsObject();
     CmsResource calResource = org.opencms.jsp.util.CmsJspStandardContextBean.getInstance(request).getElement().getResource();
-    CmsCalendarEntry calEntry = com.alkacon.opencms.v8.calendar.CmsSerialDateContentBean.getSerialEntryFrom(cmsObject, calResource);
+    CmsCalendarEntryDateSerial calEntry = com.alkacon.opencms.v8.calendar.CmsSerialDateContentBean.getSerialEntryFrom(cmsObject, calResource);
     pageContext.setAttribute("calEntry", calEntry);
 %>
 
@@ -43,19 +44,9 @@
                 <c:if test="${value.Showtime.toBoolean}">
                     <c:set var="dateType" value="both"/>
                 </c:if>
-                
-                <fmt:formatDate value="${cms:convertDate(calEntry.entryDate.startDay)}" dateStyle="long" timeStyle="short" type="${dateType}" />
-                <c:if test="${not empty calEntry.entryDate}">
-                        <fmt:formatDate var="shortStartDate" value="${cms:convertDate(calEntry.entryDate.startDay)}" dateStyle="short" type="date" />
-                        <fmt:formatDate var="shortEndDate" value="${calEntry.entryDate.endDate.time}" dateStyle="short" type="date" />
-                        <c:if test="${shortStartDate == shortEndDate && value.Showtime.toBoolean}">
-                                <fmt:message key="calendar.detail.date.to" />
-                                <fmt:formatDate value="${calEntry.entryDate.endDate.time}" timeStyle="short" type="time" />
-                        </c:if>
-                        <c:if test="${shortStartDate != shortEndDate}">
-                                <fmt:message key="calendar.detail.date.to" />
-                                <fmt:formatDate value="${calEntry.entryDate.endDate.time}" dateStyle="long" timeStyle="short" type="${dateType}" />
-                        </c:if>
+
+                <c:if test="${not empty calEntry}">
+                    <span><% out.println(calEntry.getFormattedEntryDetails()); %></span>
                 </c:if>
             </p>
 

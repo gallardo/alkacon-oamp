@@ -94,9 +94,9 @@ public final class CmsCalendarSerialDateFactory {
         int endType = getIntValue(endTypeStr, I_CmsCalendarSerialDateOptions.END_TYPE_NEVER);
         serialDate.setSerialEndType(endType);
         if (endType == I_CmsCalendarSerialDateOptions.END_TYPE_TIMES) {
-            // end type: after a number of occurences
-            String occurStr = (String)values.get(I_CmsCalendarSerialDateOptions.CONFIG_OCCURENCES);
-            serialDate.setOccurences(getIntValue(occurStr, 0));
+            // end type: after a number of occurrences
+            String occurStr = (String)values.get(I_CmsCalendarSerialDateOptions.CONFIG_OCCURRENCES);
+            serialDate.setOccurrences(getIntValue(occurStr, 0));
         } else if (endType == I_CmsCalendarSerialDateOptions.END_TYPE_DATE) {
             // end type: ends at a specified date
             String endDateStr = (String)values.get(I_CmsCalendarSerialDateOptions.CONFIG_SERIAL_ENDDATE);

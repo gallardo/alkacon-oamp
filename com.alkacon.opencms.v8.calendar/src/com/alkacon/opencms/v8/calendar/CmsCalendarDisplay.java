@@ -32,35 +32,20 @@
 
 package com.alkacon.opencms.v8.calendar;
 
-import com.alkacon.opencms.commons.CmsCollectorConfiguration;
-import com.alkacon.opencms.commons.CmsConfigurableCollector;
-
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.search.solr.CmsSolrResultList;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 
@@ -551,53 +536,6 @@ public class CmsCalendarDisplay extends CmsCalendar {
     }
 
     /**
-     * Returns the default collector that reads the calendar entries from the VFS.<p>
-     * 
-     * This basic implementation checks the calendar view file for configuration settings.
-     * 
-     * As fallback, it recursively collects entries and serial entries from the root folder.
-     * Overwrite this to change the logic of the default collection.<p>
-     * 
-     * @return the default collector that reads the calendar entries from the VFS
-     */
-    protected I_CmsResourceCollector getDefaultCollector() {
-        m_calendarViewFilePath = getCalendarViewFilePath();
-        try {
-            // read the calendar view file to determine if special collector configuration should be used
-            CmsFile calFile = getJsp().getCmsObject().readFile(m_calendarViewFilePath);
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(getJsp().getCmsObject(), calFile);
-            Locale locale = getJsp().getRequestContext().getLocale();
-            if (content.hasValue(NODE_USECONFIG, locale)) {
-                // found the use configuration element, now check the value
-                String useConf = content.getStringValue(getJsp().getCmsObject(), NODE_USECONFIG, locale);
-                if (Boolean.valueOf(useConf)) {
-                    // individual configuration should be used, configure collector accordingly
-                    CmsConfigurableCollector collector = new CmsConfigurableCollector();
-                    
-                    // The "setDefaultCollectorParam" defines the path to the
-                    // resource defining the collector configuration
-                    collector.setDefaultCollectorParam(m_calendarViewFilePath);
-                    return collector;
-                }
-            }
-        } catch (CmsException e) {
-            // ignore, the simple default configuration will be used
-            LOG.debug(String.format("No collector configured in '%s'."
-                    + " We'll use a default collector that collects all entries"
-                    + " and serial entries found recursively under the VFS root"
-                    + " folder. Exception: %s) ", m_calendarViewFilePath, e.getMessage()),e);
-        }
-
-        // simple default configuration with calendar entries and serial date entries
-        List<CmsCollectorConfiguration> defaultConfiguration =
-                new ArrayList<CmsCollectorConfiguration>();
-        defaultConfiguration.add(new CmsCollectorConfiguration("/", RESTYPE_ENTRY, null));
-        defaultConfiguration.add(new CmsCollectorConfiguration("/", RESTYPE_ENTRY_SERIAL, null));
-
-        return new CmsConfigurableCollector(defaultConfiguration);
-    }
-
-    /**
      * @return the path if already configured with {@link #setCalendarViewFilePath(java.lang.String)};
      *      if not, tries recursively to find a uri property to a config file
      *      in the vfs
@@ -1082,32 +1020,17 @@ public class CmsCalendarDisplay extends CmsCalendar {
     }
 
     /**
-     * Initializes the calendar entries using the default resource collector. <p>
-     * You probably want to configure the path to the calendar view
-     * ({@link #setCalendarViewFilePath(java.lang.String)}) before invoking
-     * this method. If the path has not been configured, the configuration will
-     * be read from the default {@link #getCalendarViewFilePath()}.
+     * Initializes the calendar entries using Solr.<p>
      * 
+     *
      * @return this instance, for expressiveness (so that method calls can be chained)
-     * @see #setCalendarViewFilePath(java.lang.String)
      */
     public CmsCalendarDisplay initCalendarEntries() {
 
-        initCalendarEntries(getDefaultCollector());
-        return this;
-    }
-
-    /**
-     * Initializes the calendar entries using the specified resource collector.<p>
-     * 
-     * @param collector the collector to use for collecting the resources
-     * @return this instance, for expressiveness (so that method calls can be chained)
-     */
-    public CmsCalendarDisplay initCalendarEntries(I_CmsResourceCollector collector) {
-
         try {
-            List<CmsResource> resources
-                    = collector.getResults(getJsp().getCmsObject());
+            String query = String.format("fq=type:(%s OR %s)&rows=10000000", RESTYPE_ENTRY, RESTYPE_ENTRY_SERIAL);
+            CmsSolrResultList resources = OpenCms.getSearchManager().getIndexSolr("Solr Offline").search(getJsp().getCmsObject(), query);
+
             List<CmsCalendarEntry> calendarEntries = createCalendarEntries(
                     resources,
                     PROPERTY_CALENDAR_STARTDATE,
@@ -1227,7 +1150,7 @@ public class CmsCalendarDisplay extends CmsCalendar {
      * @return the calendar entries from the given list of resources and their properties
      */
     protected List<CmsCalendarEntry> createCalendarEntries(
-        List<CmsResource> resources,
+        CmsSolrResultList resources,
         String pStartDate,
         String pEndDate,
         String pTitle,

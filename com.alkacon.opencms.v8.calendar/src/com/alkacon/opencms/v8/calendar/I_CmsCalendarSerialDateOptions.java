@@ -66,8 +66,8 @@ public interface I_CmsCalendarSerialDateOptions {
     /** Configuration key name for the serial date month. */
     String CONFIG_MONTH = "month";
 
-    /** Configuration key name for the serial date number of occurences. */
-    String CONFIG_OCCURENCES = "occurences";
+    /** Configuration key name for the serial date number of occurrences. */
+    String CONFIG_OCCURRENCES = "occurrences";
 
     /** Configuration key name for the serial date: series end date. */
     String CONFIG_SERIAL_ENDDATE = "serialenddate";

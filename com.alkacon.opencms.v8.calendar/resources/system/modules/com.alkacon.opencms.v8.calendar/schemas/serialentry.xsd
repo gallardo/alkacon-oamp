@@ -54,6 +54,5 @@
 			</formatters>
 			<validationrules/>
 		</xsd:appinfo>
-
-	</xsd:annotation>  
+	</xsd:annotation>
 </xsd:schema>

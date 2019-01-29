@@ -2,6 +2,15 @@ plugins {
     id "com.dorongold.task-tree" version "1.3"
 }
 
+plugins {
+    id 'com.gradle.build-scan' version '1.13.4'
+}
+
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
 
@@ -23,11 +32,20 @@ repositories {
         }
     }
     mavenCentral()
+    jcenter()
+    maven {
+        url "http://maven.vaadin.com/vaadin-addons"
+    }
 }
 
 configurations {
+    distribution {
+        description = 'libraries included into the opencms distribution'
+        transitive = false
+    }
     compile {
         description = 'used to compile the modules jars'
+        extendsFrom distribution
     }
     gwtCompile {
         description = 'used by the gwt-compiler to compile modules with gwt code'
@@ -35,7 +53,15 @@ configurations {
 }
 
 configurations.all {
-    transitive = false;
+    transitive = false
+}
+
+configurations.testCompile {
+    transitive = true
+}
+
+configurations.testRuntime {
+    transitive = true
 }
 
 
@@ -49,9 +75,39 @@ modules_oamp_all.split(',').each{ moduleName ->
             exclude '**/test/**'
             exclude '**/client/**'
         }
-        resources.srcDir "${moduleName}/src"
-    });
-    sourceSets[moduleName].compileClasspath=configurations.compile
+        resources {
+            srcDir "${moduleName}/resources"
+        }
+    })
+    sourceSets[moduleName].compileClasspath = configurations.compile
+    String testSourceSetName = "test" + moduleName.capitalize()
+    testSourceSetName = testSourceSetName.split('\\.').collect{it.capitalize()}.join().uncapitalize()
+    sourceSets.create(testSourceSetName,{
+        java {
+            srcDirs = ["${moduleName}/test"]
+        }
+        resources {
+            srcDirs = ["${moduleName}/test"]
+        }
+        compileClasspath = sourceSets[moduleName].output
+        compileClasspath += sourceSets[moduleName].compileClasspath
+        compileClasspath += configurations.testCompile
+        runtimeClasspath = output + compileClasspath
+    })
+//    String testTaskName = testSourceSetName.split('\\.').collect{it.capitalize()}.join().uncapitalize()
+    String testTaskName = testSourceSetName
+    task "$testTaskName" (type: Test, group: "Verification"){
+//        doFirst {
+//            cleanTest
+//        }
+
+        doFirst {
+            println "xxx>" + testClassesDir
+        }
+        include "**.*"
+        testClassesDir = sourceSets[testSourceSetName].output.classesDir
+        classpath = sourceSets[testSourceSetName].runtimeClasspath
+    }
     def moduleFolder = file("${projectDir}/${moduleName}")
     def srcGwtDir = file("${moduleFolder}/src")
     def manifestFile = file("${moduleFolder}/resources/manifest.xml")
@@ -202,13 +258,13 @@ modules_oamp_all.split(',').each{ moduleName ->
 
             classpath {
                 [
+                    // Classpath with the gwt-compiler
+                    configurations.gwtCompile,
                     sourceSets[moduleName].java.srcDirs,
                     sourceSets[moduleName].compileClasspath,
                     sourceSets[gwtSourceSetName].java.srcDirs,
                     sourceSets[gwtSourceSetName].output.resourcesDir,
-                    sourceSets[gwtSourceSetName].output.classesDir,
-                    // Classpath with the gwt-compiler
-                    configurations.gwtCompile
+                    sourceSets[gwtSourceSetName].output.classesDir
                 ]
             }
 
@@ -224,11 +280,12 @@ modules_oamp_all.split(',').each{ moduleName ->
                         '-localWorkers',
                         '2',
                         '-style',
-                        'obfuscated',
+                        'PRETTY',
                         '-extra',
                         extraDir,
-                        '-strict'
-                        // '-draftCompile' // Speeds up compile with 25%
+                        '-strict',
+                        '-failOnError',
+                        '-draftCompile' // Speeds up compile with 25%
                     ]
 
             maxHeapSize = max_heap_size

@@ -11,3 +11,7 @@
 /3.2.1
 /native
 /daemon
+c.xml
+/*.iml
+/out
+*.log

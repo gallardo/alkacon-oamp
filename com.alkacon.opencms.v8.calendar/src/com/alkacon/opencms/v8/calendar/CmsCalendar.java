@@ -53,7 +53,7 @@ public class CmsCalendar {
     private List<CmsCalendarEntry> m_entries;
 
     /**
-     * Default constructor, creates an empty calendar without entries.<p>
+     * Constants constructor, creates an empty calendar without entries.<p>
      */
     public CmsCalendar() {
 

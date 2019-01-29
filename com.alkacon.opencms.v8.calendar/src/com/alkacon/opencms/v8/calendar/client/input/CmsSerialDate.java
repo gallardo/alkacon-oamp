@@ -46,10 +46,7 @@ import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -104,8 +101,8 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
     /** Configuration key name for the serial date month. */
     public static final String CONFIG_MONTH = "month";
 
-    /** Configuration key name for the serial date number of occurences. */
-    public static final String CONFIG_OCCURENCES = "occurences";
+    /** Configuration key name for the serial date number of occurrences. */
+    public static final String CONFIG_OCCURRENCES = "occurrences";
 
     /** Configuration key name for the serial date: series end date. */
     public static final String CONFIG_SERIAL_ENDDATE = "serialenddate";
@@ -937,7 +934,7 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
                 break;
             case (END_TYPE_TIMES):
                 if (!m_endsAfter.getText().isEmpty()) {
-                    result += CONFIG_OCCURENCES + "=" + m_endsAfter.getText() + "|";
+                    result += CONFIG_OCCURRENCES + "=" + m_endsAfter.getText() + "|";
                 }
                 break;
             case (END_TYPE_DATE):
@@ -992,8 +989,8 @@ public class CmsSerialDate extends Composite implements I_CmsFormWidget, I_CmsHa
         CmsDebugLog.getInstance().printLine("Setting end type to: " + endType);
         m_groupDuration.selectButton(getDurationButtonForType(endType));
         if (endType == END_TYPE_TIMES) {
-            // end type: after a number of occurences
-            String occurStr = values.get(CONFIG_OCCURENCES);
+            // end type: after a number of occurrences
+            String occurStr = values.get(CONFIG_OCCURRENCES);
             CmsDebugLog.getInstance().printLine("Setting occurrences to: " + occurStr);
             m_endsAfter.setText(occurStr);
         } else if (endType == END_TYPE_DATE) {

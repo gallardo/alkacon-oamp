@@ -174,7 +174,7 @@ public class CmsSerialDateContentBean extends CmsJspActionElement implements I_C
      */
     @Override
     public CmsCalendarEntry getSerialEntryForCalendar(CmsObject cms, CmsResource resource) {
-        return getSerialEntryFrom(cms,resource);
+        return new CmsCalendarEntry(getCalendarEntryData(cms, resource), getSerialEntryFrom(cms, resource));
     }
     
     /**
@@ -183,33 +183,12 @@ public class CmsSerialDateContentBean extends CmsJspActionElement implements I_C
      * @param cms the current users context
      * @param resource the OpenCms serial-entry resource to generate the serial entry from
      * @return the serial entry
-     * 
-     * @XXX This method signature is very unfortunate, as {@link CmsCalendarEntry} doesn't
-     * provide access to the specialized <tt>CmsCalendarEntryDateSerial</tt> without casting (!)
-     * Ideally, this should return an instance of a new <tt>CmsCalendarEntrySerial</tt>
-     * class that does provide an accessor to the <tt>CmsCalendarEntryDateSerial</tt>.
-     * Trying to refactor the code is very expensive, as there are many dependencies
-     * on this method signature, and even a very evil cyclic dependency
-     * <tt>CmsCalendarEntry-CmsCalendarEntryDate</tt> that doesn't make it easier.
      */
-    public static CmsCalendarEntry getSerialEntryFrom(CmsObject cms, CmsResource resource) {
+    public static CmsCalendarEntryDateSerial getSerialEntryFrom(CmsObject cms, CmsResource resource) {
 
         // first create the entry data
-        CmsCalendarEntryData entryData = new CmsCalendarEntryData();
         Map<String,String> values = new HashMap<String,String>();
         try {
-            String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue("");
-            String showTimeStr = cms.readPropertyObject(
-                resource,
-                I_CmsCalendarEntryData.PROPERTY_CALENDAR_SHOWTIME,
-                false).getValue(CmsStringUtil.TRUE);
-            String type = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
-            entryData.setTitle(title);
-            entryData.setShowTime(Boolean.parseBoolean(showTimeStr));
-            entryData.setType(type);
-            entryData.setDetailUri(cms.getRequestContext().getSitePath(resource));
-            entryData.setDescription(cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue(
-                ""));
             // read serial date property value
             values = cms.readPropertyObject(resource, CmsCalendarDisplay.PROPERTY_CALENDAR_STARTDATE, false).getValueMap(
                 values);
@@ -250,7 +229,7 @@ public class CmsSerialDateContentBean extends CmsJspActionElement implements I_C
                 CmsCalendarEntryData entryDataClone = null;
                 if (changeEntry[1].equals(CmsSerialDateXmlContentHandler.SERIES_FLAG_CHANGED)) {
                     // this is an entry that should be changed
-                    entryDataClone = entryData.clone();
+                    entryDataClone = getCalendarEntryData(cms, resource);
                     String xPath = CmsSerialDateXmlContentHandler.NODE_CHANGE + "[" + (i + 1) + "]/";
                     if (content != null) {
                         if (content.hasValue(xPath + NODE_TITLE, locale)) {
@@ -296,7 +275,37 @@ public class CmsSerialDateContentBean extends CmsJspActionElement implements I_C
                         new CmsCalendarSerialDateInterruption(startDate, endDate));
             }
         }
-        return new CmsCalendarEntry(entryData, serialDate);
+        return serialDate;
+    }
+
+    /**
+     * Returns the calendar entry data for the calendar generation of the passed resource.
+     *
+     * @param cms the current users context
+     * @param resource the OpenCms serial-entry resource to generate the serial entry from
+     * @return the serial entry
+     */
+    public static CmsCalendarEntryData getCalendarEntryData(CmsObject cms, CmsResource resource) {
+        CmsCalendarEntryData entryData = new CmsCalendarEntryData();
+        try {
+            String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue("");
+            String showTimeStr = cms.readPropertyObject(
+                    resource,
+                    I_CmsCalendarEntryData.PROPERTY_CALENDAR_SHOWTIME,
+                    false).getValue(CmsStringUtil.TRUE);
+            String type = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+            entryData.setTitle(title);
+            entryData.setShowTime(Boolean.parseBoolean(showTimeStr));
+            entryData.setType(type);
+            entryData.setDetailUri(cms.getRequestContext().getSitePath(resource));
+            entryData.setDescription(cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue(
+                    ""));
+            // read serial date property value
+        } catch (CmsException e) {
+            // failed to read a property, no serial entry can be created, return null
+            return null;
+        }
+        return entryData;
     }
 
     /**

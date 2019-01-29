@@ -186,13 +186,13 @@ public class CmsCalendarSerialDateMonthlyOptions extends A_CmsCalendarSerialDate
                 runDate.setTimeInMillis(viewDate.getStartDay());
             }
 
-            // occurences counter
-            int occurences = 0;
+            // occurrences counter
+            int occurrences = 0;
 
             while (runDate.before(viewDate.getEndDate())) {
 
                 // check conditions to leave date series loop
-                if (checkLeaveLoop(entryDate, runDate, viewDate, occurences)) {
+                if (checkLeaveLoop(entryDate, runDate, viewDate, occurrences)) {
                     break;
                 }
                 if (matches >= maxCount) {
@@ -215,7 +215,7 @@ public class CmsCalendarSerialDateMonthlyOptions extends A_CmsCalendarSerialDate
 
                 if ((!isUseWeekDay() && (runDate.get(Calendar.DAY_OF_MONTH) == getDayOfMonth())) || foundWeekDay) {
                     // the current day contains a series entry
-                    occurences++;
+                    occurrences++;
                     long entryStart = runDate.getTimeInMillis() + entryDate.getStartTime();
                     // check if current entry is in view range
                     if ((entryStart >= viewStart) && (entryStart <= viewEnd)) {

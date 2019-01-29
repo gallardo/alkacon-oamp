@@ -111,9 +111,9 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
     }
 
     /**
-     * Returns the daily interval for the calendar entry occurences.<p>
+     * Returns the daily interval for the calendar entry occurrences.<p>
      *
-     * @return the daily interval for the calendar entry occurences
+     * @return the daily interval for the calendar entry occurrences
      */
     public int getDailyInterval() {
 
@@ -174,13 +174,13 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
                 runDate.setTimeInMillis(viewDate.getStartDay());
             }
 
-            // occurences counter
-            int occurences = 0;
+            // occurrences counter
+            int occurrences = 0;
 
             while (runDate.before(viewDate.getEndDate())) {
 
                 // check conditions to leave date series loop
-                if (checkLeaveLoop(entryDate, runDate, viewDate, occurences)) {
+                if (checkLeaveLoop(entryDate, runDate, viewDate, occurrences)) {
                     break;
                 }
                 if (matches >= maxCount) {
@@ -191,7 +191,7 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
                 Integer runWeekDay = runDate.get(Calendar.DAY_OF_WEEK);
                 if (!isEveryWorkingDay() || (isEveryWorkingDay() && getWorkingDays().contains(runWeekDay))) {
                     // the current day contains a series entry
-                    occurences++;
+                    occurrences++;
                     long entryStart = runDate.getTimeInMillis() + entryDate.getStartTime();
                     // check if current entry is in view range
                     if ((entryStart >= viewStart) && (entryStart <= viewEnd)) {
@@ -220,9 +220,9 @@ public class CmsCalendarSerialDateDailyOptions extends A_CmsCalendarSerialDateOp
     }
 
     /**
-     * Sets the daily interval for the calendar entry occurences.<p>
+     * Sets the daily interval for the calendar entry occurrences.<p>
      *
-     * @param dailyInterval the daily interval for the calendar entry occurences
+     * @param dailyInterval the daily interval for the calendar entry occurrences
      */
     public void setDailyInterval(int dailyInterval) {
 

@@ -243,6 +243,16 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/com.alkacon.opencms.v8.calendar/classes/com/alkacon/opencms/v8/calendar/messages.properties</source>
+			<destination>system/modules/com.alkacon.opencms.v8.calendar/classes/com/alkacon/opencms/v8/calendar/messages.properties</destination>
+			<type>plain</type>
+			<datecreated>Tue, 04 Sep 2007 12:17:10 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/com.alkacon.opencms.v8.calendar/classes/com/alkacon/opencms/v8/calendar/messages_de.properties</source>
 			<destination>system/modules/com.alkacon.opencms.v8.calendar/classes/com/alkacon/opencms/v8/calendar/messages_de.properties</destination>
 			<type>plain</type>
