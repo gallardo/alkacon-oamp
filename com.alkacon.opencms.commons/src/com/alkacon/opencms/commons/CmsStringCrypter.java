@@ -39,14 +39,12 @@ import org.opencms.util.CmsStringUtil;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.logging.Log;
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 /**
  * This class is responsible for encrypting and decrypting Strings.<p>
@@ -114,12 +112,12 @@ public final class CmsStringCrypter {
             cipher.init(Cipher.DECRYPT_MODE, key);
 
             // decode from base64
-            BASE64Decoder base64decoder = new BASE64Decoder();
+            Base64.Decoder base64decoder = Base64.getDecoder();
 
             value = CmsStringUtil.substitute(value, "-", "+");
             value = CmsStringUtil.substitute(value, "_", "/");
 
-            byte[] cleartext = base64decoder.decodeBuffer(value);
+            byte[] cleartext = base64decoder.decode(value);
 
             // decrypt text
             byte[] ciphertext = cipher.doFinal(cleartext);
@@ -174,8 +172,8 @@ public final class CmsStringCrypter {
             byte[] ciphertext = cipher.doFinal(cleartext);
 
             // encode with base64 to be used as a url parameter
-            BASE64Encoder base64encoder = new BASE64Encoder();
-            String base64encoded = base64encoder.encode(ciphertext);
+            Base64.Encoder base64encoder = Base64.getEncoder();
+            String base64encoded = base64encoder.encodeToString(ciphertext);
             base64encoded = CmsStringUtil.substitute(base64encoded, "+", "-");
             base64encoded = CmsStringUtil.substitute(base64encoded, "/", "_");
 
