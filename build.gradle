@@ -1,14 +1,14 @@
-plugins {
-    id "com.dorongold.task-tree" version "1.3"
-}
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    id 'com.gradle.build-scan' version '1.13.4'
+    id "com.dorongold.task-tree" version '1.3.1'
+    id 'com.gradle.build-scan' version '2.1'
 }
 
 buildScan {
-    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-    licenseAgree = 'yes'
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
 }
 
 apply plugin: 'java'
@@ -29,6 +29,7 @@ repositories {
     if (project.hasProperty('additional_repositories')){
         additional_repositories.split(';').each{ repo ->
             maven { url repo }
+            logger.info 'Added additional repo (set in additional_repositories): "' + repo + '"'
         }
     }
     mavenCentral()
@@ -68,7 +69,7 @@ configurations.testRuntime {
 // import dependencies
 apply from: 'dependencies.gradle'
 
-modules_oamp_all.split(',').each{ moduleName ->
+((String)(project.properties['modules_oamp_all'])).split(',').each { String moduleName ->
     sourceSets.create(moduleName,{
         java {
             srcDir "${moduleName}/src"
@@ -79,7 +80,10 @@ modules_oamp_all.split(',').each{ moduleName ->
             srcDir "${moduleName}/resources"
         }
     })
+    logger.debug 'Created sourceset ' + moduleName + ' -> srcDir = "' + moduleName + '/src"'
+
     sourceSets[moduleName].compileClasspath = configurations.compile
+
     String testSourceSetName = "test" + moduleName.capitalize()
     testSourceSetName = testSourceSetName.split('\\.').collect{it.capitalize()}.join().uncapitalize()
     sourceSets.create(testSourceSetName,{
@@ -89,40 +93,55 @@ modules_oamp_all.split(',').each{ moduleName ->
         resources {
             srcDirs = ["${moduleName}/test"]
         }
-        compileClasspath = sourceSets[moduleName].output
         compileClasspath += sourceSets[moduleName].compileClasspath
+        compileClasspath += sourceSets[moduleName].output
         compileClasspath += configurations.testCompile
-        runtimeClasspath = output + compileClasspath
+        runtimeClasspath += compileClasspath
     })
-//    String testTaskName = testSourceSetName.split('\\.').collect{it.capitalize()}.join().uncapitalize()
+
+    logger.debug 'Created sourceset ' + testSourceSetName + ' -> srcDirs = "' + moduleName + '/test"'
+
     String testTaskName = testSourceSetName
     task "$testTaskName" (type: Test, group: "Verification"){
-//        doFirst {
-//            cleanTest
-//        }
+        description 'Run the ' + moduleName + ' tests.'
 
-        doFirst {
-            println "xxx>" + testClassesDir
-        }
-        include "**.*"
-        testClassesDir = sourceSets[testSourceSetName].output.classesDir
+        useJUnit()
+        include "**/*"
+        testClassesDirs = sourceSets[testSourceSetName].output.classesDirs
         classpath = sourceSets[testSourceSetName].runtimeClasspath
+
+        forkEvery = 4
+        maxParallelForks = Runtime.runtime.availableProcessors() / 2
     }
-    def moduleFolder = file("${projectDir}/${moduleName}")
-    def srcGwtDir = file("${moduleFolder}/src")
-    def manifestFile = file("${moduleFolder}/resources/manifest.xml")
-    def gwtModule = null
-    def gwtSourceSetName = null
-    def propertyFile = file("${moduleFolder}/module.properties")
-    def gwtRename = null
+    check.dependsOn "$testTaskName"
+
+    // E.g. moduleName = com.alkacon.opencms.v8.calendar
+    // E.g. moduleFolder = /home/myuser/src/alkacon-oamp/com.alkacon.opencms.v8.calendar
+    File moduleFolder = project.file("${projectDir}/${moduleName}")
+
+    // E.g. srcGwtDir = /home/myuser/src/alkacon-oamp/com.alkacon.opencms.v8.calendar/src
+    File srcGwtDir = project.file("${moduleFolder}/src")
+
+    // E.g. manifetsFile = /home/myuser/src/alkacon-oamp/com.alkacon.opencms.v8.calendar/resources/manifest.xml
+    File manifestFile = project.file("${moduleFolder}/resources/manifest.xml")
+    
+    String gwtModule = null
+    String gwtSourceSetName = null
+    
+    // E.g. propertyFile = /home/myuser/src/alkacon-oamp/com.alkacon.opencms.v8.calendar/module.properties
+    File propertyFile = project.file("${moduleFolder}/module.properties")
+    String gwtRename = null
+
     if (propertyFile.exists()){
-        println "checking properties for module $moduleName"
+        logger.info "Checking properties for module $moduleName"
         Properties moduleProperties= new Properties()
         moduleProperties.load(new FileInputStream(propertyFile))
         if (moduleProperties['module.gwt']!=null){
+            // E.g. gwtModule = com.alkacon.opencms.v8.calendar.SerialDateWidget
             gwtModule = moduleProperties['module.gwt']
-            gwtSourceSetName = moduleName.replace(".", "_")+'_gwt'
-            println "found GWT module $gwtModule"
+            // Convert moduleName to CamelCase following Gradle's default naming conventions for source sets
+            gwtSourceSetName = moduleName.split('\\.').collect{it.capitalize()}.join().uncapitalize() + 'Gwt'
+            logger.info "Found GWT module $gwtModule"
             def moduleXml = (new XmlParser()).parse(srcGwtDir.toString()+"/" +gwtModule.replaceAll('\\.','/')+'.gwt.xml')
             gwtRename = moduleXml['@rename-to']
             if (gwtRename==null){
@@ -133,22 +152,26 @@ modules_oamp_all.split(',').each{ moduleName ->
     
     
     def moduleDependencies=[]
-    def moduleVersion = version
+    String moduleVersion = version
+
     if (manifestFile.exists()){
-        def parsedManifest= (new XmlParser()).parse("${moduleFolder}/resources/manifest.xml")
+        Node parsedManifest = (new XmlParser()).parse("${moduleFolder}/resources/manifest.xml")
         parsedManifest.module[0].dependencies[0].dependency.each{ dep ->
             moduleDependencies.add(dep.@name)
         }
         moduleVersion = parsedManifest.module[0].version[0].text()
     }
     task "jar_$moduleName" (type: Jar) {
+        description "Assembles a jar archive containing the $moduleName classes."
+        group "build"
+
         ext.moduleName = moduleName
         ext.moduleVersion= moduleVersion
         manifest {
             attributes 'Implementation-Title': 'Alkacon OAMP', 'Implementation-Version': moduleVersion
         }
         from sourceSets[moduleName].output
-        archiveName moduleName+'.jar'
+        archiveName moduleName + '.jar'
         baseName moduleName
         exclude '**/.gitignore'
         exclude '**/test/**'
@@ -160,6 +183,9 @@ modules_oamp_all.split(',').each{ moduleName ->
     }
 
     task "dist_$moduleName" (dependsOn: "jar_$moduleName", type: Zip){
+        description "Creates the OpenCms distributable module $moduleName."
+        group "build"
+
         ext.moduleName = moduleName
         ext.moduleFolder = moduleFolder
         ext.dependencies = moduleDependencies
@@ -183,9 +209,9 @@ modules_oamp_all.split(',').each{ moduleName ->
             println '======================================================'
         }
         // include the GWT resources if necessary
-        if (gwtModule == null){
+        if (gwtModule == null) {
             from "${moduleFolder}/resources"
-        }else{
+        } else {
             // exclude the manifest for now, use the synced manifest later
             from ("${moduleFolder}/resources") {
                 exclude 'manifest.xml'
@@ -198,7 +224,7 @@ modules_oamp_all.split(',').each{ moduleName ->
             def syncedManifest="${project.buildDir}/extra/${moduleName}/manifest.xml"
             from syncedManifest
             doFirst{
-                println "Syncing manifest from ${moduleFolder}/resources/manifest.xml to ${syncedManifest} using resources folder system/modules/${moduleName}/resources/${gwtRenameTo} with resources from ${project.buildDir}/gwt/${moduleName}/${gwtRenameTo}" 
+                logger.info "Syncing manifest from ${moduleFolder}/resources/manifest.xml to ${syncedManifest} using resources folder system/modules/${moduleName}/resources/${gwtRenameTo} with resources from ${project.buildDir}/gwt/${moduleName}/${gwtRenameTo}" 
                 ant.taskdef(resource: 'org/opencms/util/ant/taskdefs.properties', classpath: configurations.compile.asPath)
                 ant.syncmanifest(
                         srcmanifestfile: "${moduleFolder}/resources/manifest.xml",
@@ -210,10 +236,9 @@ modules_oamp_all.split(',').each{ moduleName ->
             }
         }
     }
-    
+
+    // E.g. gwtModule = com.alkacon.opencms.v8.calendar.SerialDateWidget
     if (gwtModule != null){
-        println "creating sourceset for $gwtModule"
-        
         sourceSets.create(gwtSourceSetName,{
             java {
                 srcDirs srcGwtDir
@@ -223,6 +248,8 @@ modules_oamp_all.split(',').each{ moduleName ->
                 srcDirs srcGwtDir
             }
         })
+        logger.debug 'Created sourceset ' + gwtSourceSetName + ' for GWT module "' + gwtModule + '" -> srcDirs = "' + srcGwtDir + '"'
+
         configurations {
             "${gwtSourceSetName}Compile" {
                 description = "gwt-compiler classpath for $gwtSourceSetName"
@@ -235,6 +262,9 @@ modules_oamp_all.split(',').each{ moduleName ->
         }
 
         task "gwt_$moduleName" (dependsOn: "${gwtSourceSetName}Classes", type: JavaExec) {
+            description = "Invokes the GWT Compiler to create the GWT module $moduleName."
+            group = "gwt"
+
             ext.buildDir =  project.buildDir.toString()  +"/gwt/$moduleName"
             ext.extraDir =  project.buildDir.toString() + "/extra/$moduleName"
             ext.moduleName = moduleName
@@ -264,10 +294,9 @@ modules_oamp_all.split(',').each{ moduleName ->
                     sourceSets[moduleName].compileClasspath,
                     sourceSets[gwtSourceSetName].java.srcDirs,
                     sourceSets[gwtSourceSetName].output.resourcesDir,
-                    sourceSets[gwtSourceSetName].output.classesDir
+                    sourceSets[gwtSourceSetName].output.classesDirs
                 ]
             }
-
 
             args =
                     [
@@ -294,62 +323,75 @@ modules_oamp_all.split(',').each{ moduleName ->
         tasks["dist_$moduleName"].dependsOn tasks["gwt_$moduleName"]
     }
     
-    task "javadoc_$moduleName" (type: Javadoc){
+    task "javadoc_$moduleName" (type: Javadoc, group: 'Documentation'){
+        description "Generates Javadoc API documentation for the $moduleName source code."
+
         source = sourceSets[moduleName].allJava
         classpath = project.sourceSets[moduleName].compileClasspath
         destinationDir = file("${buildDir}/docs/javadoc${moduleName}")
         options.addStringOption("sourcepath", "")
     }
 
-    task "javadocJar_$moduleName"(type: Jar) {
+    task "jarJavadoc_$moduleName" (type: Jar, group: 'build') {
+        description "Assembles a jar archive with the Javadoc API documentation for the $moduleName source code."
+
         it.dependsOn("javadoc_$moduleName")
         classifier = 'javadoc'
         from "${buildDir}/docs/javadoc${moduleName}"
         baseName moduleName
     }
 
-    task "sourcesJar_$moduleName"(type: Jar) {
+    task "jarSources_$moduleName" (type: Jar, group: 'Build') {
+        description "Assembles a jar archive containing the $moduleName source code."
         from sourceSets[moduleName].allSource
         classifier = 'sources'
         baseName moduleName
     }
     
 }
+
 task bindist {
+    description "Builds all distributables."
+    group "build"
+
     doFirst{
         println 'Done'
     }
 }
 
-tasks.findAll{ task -> task.name.startsWith('dist_')}.each{ dist_task ->
-    dist_task.dependencies.each{ dep ->
-        def depCompileName = 'compile'+dep.replaceAll('\\.','')+'java'
-        tasks.findAll{ comp_task -> comp_task.name.toLowerCase().equals(depCompileName)}.each {comp_task ->
-            sourceSets[dist_task.moduleName].compileClasspath += comp_task.outputs.files
-            if (dist_task.gwtSourceSetName!=null){
-                sourceSets["${dist_task.gwtSourceSetName}"].compileClasspath += comp_task.outputs.files
-                // we need to manipulate the classpath of the java doc task specifically
-                tasks['javadoc_'+dist_task.moduleName].classpath += comp_task.outputs.files
+tasks.findAll { Task task -> task.name.startsWith('dist_') }.each { Task distTask ->
+    distTask.dependencies.each { String dep ->
+        String depCompileName = 'compile' + dep.replaceAll('\\.', '') + 'java'
+
+        // TODO: AG 2019-01-30 - There is a SourceSet.getCompileTaskName and SourceSet.getTaskName that could be used for this
+        // Eg.: sourceSets[distTask.moduleName].getCompileTaskName
+        tasks.findAll { Task compTask -> (compTask.name.toLowerCase() == depCompileName) }.each { Task compTask ->
+            sourceSets[distTask.moduleName].compileClasspath += compTask.outputs.files
+
+            if (distTask.gwtSourceSetName != null) {
+                sourceSets[distTask.gwtSourceSetName].compileClasspath += compTask.outputs.files
+
+                // We need to manipulate the classpath of the java doc task specifically
+                tasks['javadoc_' + distTask.moduleName].classpath += compTask.outputs.files
             }
         }
     }
-    tasks['jar_'+dist_task.moduleName].dependsOn{
-        tasks.findAll{ comp_task -> comp_task.name.toLowerCase().equals('compile'+dist_task.moduleName.replaceAll('\\.','')+'java')}
+
+    // TODO: AG 2019-01-30 - There is a SourceSet.getCompileTaskName and SourceSet.getTaskName that could be used for this
+    // Eg.: sourceSets[distTask.moduleName].getCompileTaskName
+    tasks['jar_' + distTask.moduleName].dependsOn {
+        tasks.findAll { Task compTask -> (compTask.name.toLowerCase() == 'compile' + distTask.moduleName.replaceAll('\\.', '') + 'java') }
     }
-    bindist.dependsOn dist_task
+    bindist.dependsOn distTask
 }
 
-// fixed issue with libraries containing both .java and .class files
-tasks.withType(JavaCompile) {
-    options.compilerArgs += ["-sourcepath", ""]
-}
 artifacts {
-    tasks.each{ task ->
-        if (task.name.startsWith("jar_com.alkacon.")){
-            def moduleName=task.baseName
+    tasks.each{ Task task ->
+        if (task.name.startsWith("jar_com.alkacon.")) {
+            String moduleName = task.baseName
             archives task
-            archives tasks["javadocJar_$moduleName"]
-            archives tasks["sourcesJar_$moduleName"]
+            archives tasks["jarJavadoc_$moduleName"]
+            archives tasks["jarSources_$moduleName"]
         }
     }
 }
@@ -400,10 +442,11 @@ install {
 }
 
 // fixed issue with libraries containing both .java and .class files
-tasks.withType(JavaCompile) {
+compileJava {
     options.compilerArgs += ["-sourcepath", ""]
     options.encoding='UTF-8'
 }
+
 tasks.withType(Javadoc) {
     options.addStringOption("sourcepath", "")
     if (JavaVersion.current().isJava8Compatible()) {
@@ -411,7 +454,45 @@ tasks.withType(Javadoc) {
         options.addBooleanOption("-allow-script-in-comments",true);
     }
 }
+
 // all tasks implementing the CopySpec (Copy,Jar,Zip,...) should fail, in case they generate duplicate files
 tasks.withType(CopySpec){
 //    duplicatesStrategy 'fail'
+}
+
+// Enrich tests execution output [From https://stackoverflow.com/a/36130467/413020]
+tasks.withType(Test) {
+    testLogging {
+        // set options for log level LIFECYCLE
+        events TestLogEvent.FAILED,
+                TestLogEvent.PASSED,
+                TestLogEvent.SKIPPED,
+                TestLogEvent.STANDARD_OUT
+        exceptionFormat TestExceptionFormat.FULL
+        showExceptions true
+        showCauses true
+        showStackTraces true
+
+        // set options for log level DEBUG and INFO
+        debug {
+            events TestLogEvent.STARTED,
+                    TestLogEvent.FAILED,
+                    TestLogEvent.PASSED,
+                    TestLogEvent.SKIPPED,
+                    TestLogEvent.STANDARD_ERROR,
+                    TestLogEvent.STANDARD_OUT
+            exceptionFormat TestExceptionFormat.FULL
+        }
+        info.events = debug.events
+        info.exceptionFormat = debug.exceptionFormat
+
+        afterSuite { desc, result ->
+            if (!desc.parent) { // will match the outermost suite
+                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+                def startItem = '|  ', endItem = '  |'
+                def repeatLength = startItem.length() + output.length() + endItem.length()
+                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+            }
+        }
+    }
 }
