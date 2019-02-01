@@ -62,7 +62,7 @@ public class CmsCalendarViewSimple implements I_CmsCalendarView {
         public int compare(CmsCalendarEntry arg0, CmsCalendarEntry arg1) {
 
             if (arg0 == arg1) {
-                return -1;
+                return 0;
             }
 
             long start0 = arg0.getEntryDate().getStartDate().getTimeInMillis();
@@ -97,7 +97,7 @@ public class CmsCalendarViewSimple implements I_CmsCalendarView {
         public int compare(CmsCalendarEntryDate arg0, CmsCalendarEntryDate arg1) {
 
             if (arg0 == arg1) {
-                return -1;
+                return 0;
             }
 
             long viewStart = arg0.getStartDate().getTimeInMillis();

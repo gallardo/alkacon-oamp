@@ -92,8 +92,8 @@ public class CmsCalendarEntryDate implements Cloneable {
 
         m_startDate = startDate;
         m_endDate = endDate;
-        m_startTime = new GregorianCalendar(2010, 0, 10, 0, 0, 0);
-        m_endTime = new GregorianCalendar(2010, 0, 10, 0, 0, 0);
+        m_startTime = new GregorianCalendar(2010, Calendar.JANUARY, 10, 0, 0, 0);
+        m_endTime = new GregorianCalendar(2010, Calendar.JANUARY, 10, 0, 0, 0);
         // calculate the time information for the other members
         calculateEntryTimes();
     }
@@ -121,7 +121,7 @@ public class CmsCalendarEntryDate implements Cloneable {
         long h = time % MILLIS_01_PER_HOUR;
         time = time - h;
         long m = time % MILLIS_00_PER_MINUTE;
-        Calendar cal = new GregorianCalendar(2010, 0, 10, (int)h, (int)m, 0);
+        Calendar cal = new GregorianCalendar(2010, Calendar.JANUARY, 10, (int)h, (int)m, 0);
         return cal;
     }
 

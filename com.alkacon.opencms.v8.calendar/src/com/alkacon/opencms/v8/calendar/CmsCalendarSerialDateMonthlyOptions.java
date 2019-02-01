@@ -87,11 +87,7 @@ public class CmsCalendarSerialDateMonthlyOptions extends A_CmsCalendarSerialDate
 
         m_dayOfMonth = dayOfMonth;
         m_weekDay = weekDay;
-        if ((weekDay < Calendar.SUNDAY) || (weekDay > Calendar.SATURDAY)) {
-            m_useWeekDay = false;
-        } else {
-            m_useWeekDay = true;
-        }
+        m_useWeekDay = (weekDay >= Calendar.SUNDAY) && (weekDay <= Calendar.SATURDAY);
         m_monthlyInterval = 1;
         if (monthlyInterval > 0) {
             m_monthlyInterval = monthlyInterval;

@@ -194,6 +194,7 @@ public class CmsSerialDateContentBean extends CmsJspActionElement implements I_C
                 values);
         } catch (CmsException e) {
             // failed to read a property, no serial entry can be created, return null
+            // TODO: Log
             return null;
         }
         Locale locale = cms.getRequestContext().getLocale();

@@ -39,7 +39,7 @@ import java.util.Calendar;
  * 
  * @author Andreas Zahner
  */
-public class CmsCalendarSerialDateChange extends Object {
+public class CmsCalendarSerialDateChange {
 
     /** The changed entry data. */
     private I_CmsCalendarEntryData m_entryData;

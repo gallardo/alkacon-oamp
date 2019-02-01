@@ -88,11 +88,7 @@ public class CmsCalendarSerialDateYearlyOptions extends A_CmsCalendarSerialDateO
 
         m_dayOfMonth = dayOfMonth;
         m_weekDay = weekDay;
-        if ((weekDay < Calendar.SUNDAY) || (weekDay > Calendar.SATURDAY)) {
-            m_useWeekDay = false;
-        } else {
-            m_useWeekDay = true;
-        }
+        m_useWeekDay = (weekDay >= Calendar.SUNDAY) && (weekDay <= Calendar.SATURDAY);
         m_month = 0;
         if ((month > -1) && (month < 12)) {
             m_month = month;

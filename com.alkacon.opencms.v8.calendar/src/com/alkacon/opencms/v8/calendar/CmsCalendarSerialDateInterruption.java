@@ -39,7 +39,7 @@ import java.util.Calendar;
  * 
  * @author Andreas Zahner
  */
-public class CmsCalendarSerialDateInterruption extends Object {
+public class CmsCalendarSerialDateInterruption {
 
     /** The end date of the interruption. */
     private Calendar m_endDate;
